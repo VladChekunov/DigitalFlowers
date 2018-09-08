@@ -88,3 +88,57 @@ nav a{
 	padding: 7px;
 	text-align: right;
 }
+
+
+.jumbotron{
+	display:block;
+	height:95vh;
+	width:100%;
+	overflow: hidden;
+	background:#0000ff;
+	position:relative;
+}
+.jt_bg img{
+	width:100%;
+}
+
+.jt_fg{
+	display:block;
+	position:absolute;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.5);
+	top:0;
+	left:0;
+}
+
+.jt_fg .content{
+	display:block;
+	margin:auto;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	width: fit-content;
+	height: fit-content;
+	color:#fff;
+	font-size:20px;
+	text-align:center;
+	font-family: 'Open Sans', sans-serif;
+}
+.jt_fg .content p{
+	margin-top:0px;
+
+}
+.jt_fg .content .jt_btn{
+	text-align:center;
+	background:#fff;
+	color:#000;
+	text-decoration:none;
+	padding-left:20px;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-right:20px;
+	margin:20px;
+}
