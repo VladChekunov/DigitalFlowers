@@ -1,5 +1,90 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=cyrillic');
+
 body{
 	margin:0;
 	padding:0;
+	background:#eeeeee;
+}
+
+header{
+	display:block;
+	height:100px;
+	width:100%;
+	padding-left:70px;
+	padding-right:70px;
+	box-sizing: border-box;
 	background:#ffffff;
+}
+.header_container{
+	display:block;
+	width:100%;
+	height:100%;
+}
+.logo{
+	display:block;
+	float:left;
+	width:262px;
+	height:50px;
+	margin-top:30px;
+}
+.logo img{
+	height:100%;
+}
+nav{
+	display: block;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	text-align: center;
+	position: absolute;
+	margin-top:58px;
+}
+nav a{
+	color:#231f20;
+	font-size:16px;
+	text-decoration:none;
+	font-family: 'Open Sans', sans-serif;
+	padding-left:16px;
+	padding-right:16px;
+}
+
+.phone{
+	display:block;
+	float:right;
+	width:262px;
+	margin-top: 30px;
+}
+
+.phone_tip{
+	font-family: 'Open Sans', sans-serif;
+	font-size:16px;
+}
+
+.phone_num{
+	font-family: 'Open Sans', sans-serif;
+	font-size:20px;
+	font-weight:bold;
+	z-index: 10;
+	position: absolute;
+	color:#565656;
+}
+
+.phone_left{
+	display:block;
+	height:40px;
+	width:40px;
+	float:left;
+	border: solid 3px #000;
+}
+.phone_right{
+	height:50px;
+	width:202px;
+	display:block;
+	float:right;
+}
+
+.phone_left i{
+	font-size: 24px;
+	padding: 7px;
+	text-align: right;
 }
