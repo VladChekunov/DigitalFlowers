@@ -128,8 +128,6 @@ nav a{
 	font-family: 'Open Sans', sans-serif;
 }
 .jt_fg .content p{
-	margin-top:0px;
-
 }
 .jt_fg .content .jt_btn{
 	text-align:center;
@@ -141,4 +139,45 @@ nav a{
 	padding-bottom:10px;
 	padding-right:20px;
 	margin:20px;
+	display: inline-block;
 }
+
+.text_container{
+	box-sizing:border-box;
+	padding-left:70px;
+	padding-right:70px;
+	padding-top:90px;
+	padding-bottom:90px;
+}
+.text_container h2{
+	text-transform:uppercase;
+	font-family: 'Open Sans', sans-serif;
+	text-align:center;
+	font-size:28px;
+}
+
+.cols_container{
+	display:inline-block;
+}
+
+.cols_container .col-4{
+	display:block;
+	width:33.333%;
+	float:left;
+}
+
+.cols_container .image_card{
+	box-sizing:border-box;
+	padding-left:90px;
+	padding-right:90px;
+	display:block;
+	text-align:center;
+	font-family: 'Open Sans', sans-serif;
+}
+.cols_container .image_card .fa{
+	display:block;
+	color:#4f5638;
+	font-size:60px;
+	padding:20px;
+}
+
