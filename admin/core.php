@@ -24,6 +24,9 @@ class CMSCore{
 </body>
 </html>";
 	}
+	function UIgetAuthForm(){
+		echo "<input placeholder=\"Логин\"><input placeholder=\"Пароль\"><a href=\"\">Войти</a>";
+	}
 	function CMSCore($host,$user,$password,$db){
 		$this->mysqlHost = $host;
 		$this->mysqlUser = $user;

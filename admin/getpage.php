@@ -13,7 +13,7 @@ Render specific page with footer header etc
 			if($api->userPermission==1){
 				echo "Открываем админ-панель";
 			}else{
-				echo "Открываем форму авторизации";
+				$api->UIgetAuthForm();
 			}
 		$api->UIendAdminHeader();
 
