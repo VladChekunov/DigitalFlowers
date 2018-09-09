@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS `mydb`.`users` (
   `key` VARCHAR(32) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
+
+INSERT INTO `dflowers`.`users` (`login`, `pass`) VALUES ('Admin', '5f4dcc3b5aa765d61d8327deb882cf99');
