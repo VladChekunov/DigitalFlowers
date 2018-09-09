@@ -15,6 +15,8 @@ class CMSCore{
 <html>
 <head>
 	<title>Админ-панель</title>
+	<meta charset=\"utf-8\">
+	<script src=\"admin.js\"></script>
 </head>
 <body>
 ";
@@ -25,7 +27,10 @@ class CMSCore{
 </html>";
 	}
 	function UIgetAuthForm(){
-		echo "<input placeholder=\"Логин\"><input placeholder=\"Пароль\"><a href=\"\">Войти</a>";
+		echo "
+	<input class=\"loginInput\" placeholder=\"Логин\">
+	<input class=\"passwordInput\" type=\"password\" placeholder=\"Пароль\">
+	<a class=\"signInBtn\" href=\"javascript://\">Войти</a>";
 	}
 	function CMSCore($host,$user,$password,$db){
 		$this->mysqlHost = $host;

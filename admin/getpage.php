@@ -11,12 +11,21 @@ Render specific page with footer header etc
 	if($get_reqs[1]=="admin"){
 		$api->UIbeginAdminHeader();
 			if($api->userPermission==1){
-				echo "Открываем админ-панель";
+				echo "TODO: Открываем админ-панель";
 			}else{
 				$api->UIgetAuthForm();
 			}
 		$api->UIendAdminHeader();
 
+	}else if($get_reqs[1]=="api"){
+		switch($get_reqs[2]){
+			case "Auth":
+				echo "TODO: Make Auth?";
+			break;
+			case "Exit":
+				echo "TODO: Out?";
+			break;
+		}
 	}else{
 		echo "Запрашиваем список всех страниц и сравниваем их с текущей";
 		//Если не одна не подходит -> 404
