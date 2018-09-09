@@ -127,8 +127,6 @@ nav a{
 	text-align:center;
 	font-family: 'Open Sans', sans-serif;
 }
-.jt_fg .content p{
-}
 .jt_fg .content .jt_btn{
 	text-align:center;
 	background:#fff;
@@ -158,6 +156,7 @@ nav a{
 
 .cols_container{
 	display:inline-block;
+	width:100%;
 }
 
 .cols_container .col-4{
@@ -181,3 +180,47 @@ nav a{
 	padding:20px;
 }
 
+.cols_container .col-3{
+	display:block;
+	width:25%;
+	float:left;
+	position: relative;
+}
+
+.cols_container .row{
+	display: inline-block;
+	width:100%;
+}
+.cols_container .col-3 img{
+	width:100%;
+}
+
+.product_image{
+      position: relative;
+}
+.product_image .price{
+	display: block;
+	position: absolute;
+	bottom: 4px;
+	right: 0px;
+	height:36px;
+	background:#fff;
+	color:#000;
+	border:3px #000 solid;
+	font-size: 24px;
+	padding-left:10px;
+	padding-right:10px;
+	text-align: center;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.product_name{
+	font-size:18px;
+	padding-top:10px;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.product{
+	box-sizing:border-box;
+	padding:10px;
+}
