@@ -20,7 +20,7 @@ Render specific page with footer header etc
 	}else if($get_reqs[1]=="api"){
 		switch($get_reqs[2]){
 			case "Auth":
-				echo "TODO: Make Auth?";
+				$api->API->Auth();
 			break;
 			case "Exit":
 				echo "TODO: Out?";

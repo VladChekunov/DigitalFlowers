@@ -1,5 +1,19 @@
 <?php
 
+class API{
+	function Auth(){
+		if(!isset($_GET["login"]) || !isset($_GET["password"])){
+			//Логин или пароль не введены
+		}
+		if($_GET["login"]){//TODO
+			//Логин не валиден
+		}
+		//Делаем запрос в бд, с шифрованным password в md5
+		echo '{"success":'.$_GET["login"].'}';
+		//Auth function
+	}
+}
+
 class CMSCore{
 	var $mysqlHost;
 	var $mysqlUser;
@@ -10,6 +24,9 @@ class CMSCore{
 	var $userPermission;//0 - nobody 1 - admin
 	var $userLogin;
 	var $userId;
+
+	var $API;
+
 	function UIbeginAdminHeader(){
 		echo "<!DOCTYPE html>
 <html>
@@ -39,6 +56,7 @@ class CMSCore{
 		$this->mysqlDB = $db;
 		$this->connectMySQL();
 		$this->checkUser();//get User Name & User Permission
+		$this->API = new API();
 	}
 	function connectMySQL(){
 		$this->mysqlConnect = mysqli_connect($this->mysqlHost, $this->mysqlUser, $this->mysqlPassword, $this->mysqlDB);
@@ -65,5 +83,4 @@ class CMSCore{
 		}
 	}
 }
-
 ?>

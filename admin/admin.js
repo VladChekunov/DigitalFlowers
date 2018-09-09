@@ -9,7 +9,23 @@ var admin = {
 	signin:function(){
 		authlogin = document.getElementsByClassName("loginInput")[0].value;
 		authPassword = document.getElementsByClassName("passwordInput")[0].value;
-		alert("login: "+authlogin+"; password: "+authPassword);
+		admin.ajaxSend("/api/Auth/?login="+authlogin+"&password="+authPassword,function(e){
+			if(e.target.response.result==0){
+				alert("Авторизованы");
+			}else{
+				alert("Не Авторизованы");
+			}
+		});
+	},
+	ajaxSend:function(url,callback){
+		var oReq = new XMLHttpRequest();
+		oReq.onload = function (e) {
+			callback(e);
+		    //results.innerHTML = e.target.response.message;
+		};
+		oReq.open('GET', url, true);
+		oReq.responseType = 'json';
+		oReq.send();
 	}
 }
 window.onload=function(){
