@@ -10,6 +10,61 @@ var admin = {
 				admin.signout();
 			}
 		}
+		if(document.getElementsByClassName("menu_active").length>0){
+			admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[0]});
+			document.getElementsByClassName("menu_active")[0].onclick=function(){
+				admin.menu.open();
+			}
+		}
+	},
+	pages:{
+		showPagesList:function(){
+			admin.ajaxSend("/api/GetPages/",function(e){
+				if(e.target.response.success==1){
+					pagesList="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>title</th>\n\t<th>url</th>\n\t<th>Edit</th>\n\t<th>Order</th>\n\t<th>Remove</th>\n</tr>\n";
+					for(var i=0;i<e.target.response.pages.length;i++){
+						pagestatus="enabled_page";
+						if(e.target.response.pages[i].status==0){
+							pagestatus="disabled_page";
+						}
+						pagesList+="<tr class=\""+pagestatus+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\"></td><td><a onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+					}
+					pagesList+="</table>"
+					document.getElementsByClassName("admin_content")[0].innerHTML=pagesList;
+					console.log(e.target.response);
+					//alert("Список страниц получен");
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
+		}
+	},
+	menu:{
+		close:function(e){
+			if(e.target.parentNode.className=="menu_list"){
+				switch(e.target.innerHTML){
+					case "Pages":
+						admin.pages.showPagesList();
+						break;
+					case "Users":
+					break;
+					case "Products":
+					break;
+					case "Settings":
+					break;
+				}
+				document.getElementsByClassName("menu_active")[0].innerHTML=e.target.innerHTML;
+			}
+			document.getElementsByClassName("menu_list")[0].style.display="none";
+			document.removeEventListener("click", admin.menu.close , false);
+		},
+		open:function(){
+			document.getElementsByClassName("menu_list")[0].style.display="block";
+			setTimeout(function(){
+				document.addEventListener("click", admin.menu.close , false);
+			});
+			
+		}
 	},
 	signout:function(){
 		admin.ajaxSend("/api/Exit/",function(e){

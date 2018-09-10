@@ -25,3 +25,51 @@ header{
 *{
      font-family: 'Open Sans', sans-serif;
 }
+.admin_menu{
+	display: block;
+	float: left;
+	position:relative;
+}
+
+.menu_list{
+	display: block;
+	position: absolute;
+	top: -10px;
+	left: -10px;
+	background: #000;
+	padding: 10px;
+}
+.menu_list a{
+	color:#fff;
+	text-decoration:none;
+}
+.menu_active{
+	cursor:pointer;
+}
+
+.admin_content{
+	background:#eee;
+	color:#000;
+	padding:20px;
+	box-sizing:border-box;
+}
+.pages_list{
+	width:100%;
+	background:#333;
+	color:#fff;
+	border-collapse: collapse;
+}
+.pages_list th, td{
+	text-align:left;
+	padding: .75rem;
+}
+.pages_list td{
+	border-top: 1px solid #dee2e6;
+	background:#999;
+	color:#000;
+}
+.pages_list tr{
+	display: table-row;
+	vertical-align: inherit;
+	border-color: inherit;
+}

@@ -69,6 +69,34 @@ class API{
 			'success'  => 1,
 		);
 	}
+	function GetPages(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		mysqli_select_db($api->mysqlConnect, "pages");
+		$query = mysqli_query($api->mysqlConnect, "SELECT `id`, `url`, `title`, `status`, `order` FROM `pages` ORDER BY `order`;");
+
+		$result = array();
+		while($row = mysqli_fetch_assoc($query)){
+			$listContent = array(
+				'id'=>$row["id"],
+				'url'=>$row["url"],
+				'title'=>$row["title"],
+				'status'=>$row["status"],
+			);
+			$result[] = $listContent;
+		}
+		//Обращаемся к бд и получаем список всех страниц.
+			return array(
+				'success'  => 1,
+				'pages' => $result,
+			);
+
+	}
 }
 
 class CMSCore{
@@ -128,6 +156,15 @@ class CMSCore{
 	function UIgetAdminPanel(){
 		echo "
 	<header>
+		<div class=\"admin_menu\">
+			<div class=\"menu_active\">Pages</div>
+			<div style=\"display:none\" class=\"menu_list\">
+				<a href=\"javascript://\">Pages</a>
+				<a href=\"javascript://\">Users</a>
+				<a href=\"javascript://\">Products</a>
+				<a href=\"javascript://\">Settings</a>
+			</div>
+		</div>
 		<div class=\"logout\">
 			<i class=\"fa fa-sign-out-alt\"></i> Выйти
 		</div>
@@ -135,6 +172,7 @@ class CMSCore{
 			<i class=\"fa fa-user\"></i> ".$this->userLogin."
 		</div>
 	</header>
+	<div class=\"admin_content\"></div>
 	";
 	}
 	function UIgetAuthForm(){
