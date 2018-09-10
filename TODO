@@ -6,15 +6,6 @@
 		Открыть
 		Удалить
 	Список страниц
-		DB
-			pages
-				id
-				url
-				title
-				source
-				content
-				order
-				hide 0/1
 		Добавить
 			INSERT INTO `pages` (`url`, `title`, `source`, `content`, `status`, `order`) VALUES ('home', 'Home', 'Home page', 'Home page', '0', '0');
 		Редактировать

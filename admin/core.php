@@ -99,8 +99,11 @@ class CMSCore{
 			return 0;
 		}
 		//get content from db
+		$query = mysqli_query($this->mysqlConnect, "SELECT `content` FROM `pages` WHERE `id` = '".$pageId."';");
+		$pagedata = mysqli_fetch_assoc($query);
+
 		include "../template/header.php";
-		echo $pageId;
+		echo $pagedata["content"];
 		include "../template/footer.php";
 		return 1;
 	}

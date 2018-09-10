@@ -29,15 +29,24 @@ Render specific page with footer header etc
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){
-			echo $api->getPage(-1);
+			$api->getPage(-1);
 		}else{
 			$query = mysqli_query($api->mysqlConnect, "SELECT `url`,`id` FROM dflowers.pages WHERE `status`=1 ORDER by `order`;");
 			$isPageFind=false;
 			while($row = mysqli_fetch_assoc($query)){
-				if($row["url"]==$get_reqs[1]){
-					$api->getPage($row["id"]);
-					$isPageFind=true;
-					break;
+				if(sizeof($get_reqs)<1 || $get_reqs[1]==NULL){
+					if($row["url"]=="@"){
+						//Запрашиваем глагне
+						$api->getPage($row["id"]);
+						$isPageFind=true;
+						break;
+					}
+				}else{
+					if($row["url"]==$get_reqs[1]){
+						$api->getPage($row["id"]);
+						$isPageFind=true;
+						break;
+					}
 				}
 			}
 			if($isPageFind==false){
