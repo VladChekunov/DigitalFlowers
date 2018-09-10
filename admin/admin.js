@@ -10,10 +10,11 @@ var admin = {
 		authlogin = document.getElementsByClassName("loginInput")[0].value;
 		authPassword = document.getElementsByClassName("passwordInput")[0].value;
 		admin.ajaxSend("/api/Auth/?login="+authlogin+"&password="+authPassword,function(e){
-			if(e.target.response.result==0){
+			//console.log(e.target.response.success);
+			if(e.target.response.success==1){
 				alert("Авторизованы");
 			}else{
-				alert("Не Авторизованы");
+				alert("Ошибка. "+e.target.response.error);
 			}
 		});
 	},

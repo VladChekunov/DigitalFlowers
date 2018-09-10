@@ -2,15 +2,57 @@
 
 class API{
 	function Auth(){
+		global $api;
+		if($api->userPermission==1){
+			return array(
+				'success'  => 0,
+				'error'  => "Вы уже авторизованы.",
+			);
+		}
 		if(!isset($_GET["login"]) || !isset($_GET["password"])){
-			//Логин или пароль не введены
+			return array(
+				'success'  => 0,
+				'error'  => "Не указан логин или пароль.",
+			);
 		}
-		if($_GET["login"]){//TODO
-			//Логин не валиден
+		if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){//TODO
+			return array(
+				'success'  => 0,
+				'error'  => "Логин не валиден.",
+			);
 		}
-		//Делаем запрос в бд, с шифрованным password в md5
-		echo '{"success":'.$_GET["login"].'}';
-		//Auth function
+		if(strlen($_GET['password'])<8 || strlen($_GET['password'])>32){
+			return array(
+				'success'  => 0,
+				'error'  => "Пароль не валиден.",
+			);
+		}
+
+		mysqli_select_db($api->mysqlConnect, "users");
+		$query = mysqli_query($api->mysqlConnect, "SELECT id, pass FROM users WHERE login='".$_GET['login']."' LIMIT 1");
+		$data = mysqli_fetch_assoc($query);
+
+		if($data==NULL){
+			return array(
+				'success'  => 0,
+				'error'  => "Неправильный логин или пароль.",
+			);
+		}
+
+		if($data['pass'] != md5(md5($_GET["password"]))){
+			return array(
+				'success'  => 0,
+				'error'  => "Неправильный логин или пароль. Пароль. ".$data['pass']." ".md5(md5($_GET["password"])),
+			);
+		}
+
+		$hash = md5($api->generateCode(10));
+		setcookie("key", $hash, time()+60*60*24*30, "/");
+		mysqli_query($api->mysqlConnect, "UPDATE `users` SET `key`='".$hash."' WHERE `id`='".$data['id']."';");
+
+		return array(
+			'success'  => 1,
+		);
 	}
 }
 
@@ -27,6 +69,15 @@ class CMSCore{
 
 	var $API;
 
+	function generateCode($length=6) {
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
+		$code = "";
+		$clen = strlen($chars) - 1;
+		while(strlen($code) < $length){
+			$code .= $chars[mt_rand(0,$clen)];
+		}
+		return $code;
+	}
 	function UIbeginAdminHeader(){
 		echo "<!DOCTYPE html>
 <html>
@@ -66,13 +117,13 @@ class CMSCore{
 		}
 	}
 	function checkUser(){
-		if (isset($_COOKIE["hash"])){
+		if (isset($_COOKIE["key"])){
 			//mysql_select_db("users");
-			$query = mysqli_query($this->mysqlConnect, "SELECT * FROM users WHERE user_hash = '".$_COOKIE['hash']."' LIMIT 1");
+			$query = mysqli_query($this->mysqlConnect, "SELECT * FROM `users` WHERE `key` = '".$_COOKIE['key']."' LIMIT 1");
 			$userdata = mysqli_fetch_assoc($query);
-			if($userdata['user_hash'] == $_COOKIE['hash']){
+			if($userdata['key'] == $_COOKIE['key']){
 				$this->userPermission=1;
-				$this->userLogin=$userdata['user_login'];
+				$this->userLogin=$userdata['login'];
 				$this->userId=$userdata['id'];
 			}else{
 				$this->userPermission=0;
