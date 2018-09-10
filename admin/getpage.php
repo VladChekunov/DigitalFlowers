@@ -11,7 +11,8 @@ Render specific page with footer header etc
 	if($get_reqs[1]=="admin"){
 		$api->UIbeginAdminHeader();
 			if($api->userPermission==1){
-				echo "TODO: Открываем админ-панель";
+				//echo "TODO: Открываем админ-панель";
+				$api->UIgetAdminPanel();
 			}else{
 				$api->UIgetAuthForm();
 			}
@@ -23,7 +24,7 @@ Render specific page with footer header etc
 				echo json_encode($api->API->Auth());
 			break;
 			case "Exit":
-				echo "TODO: Out?";
+				echo json_encode($api->API->Exit());
 			break;
 		}
 	}else{

@@ -42,7 +42,7 @@ class API{
 		if($data['pass'] != md5(md5($_GET["password"]))){
 			return array(
 				'success'  => 0,
-				'error'  => "Неправильный логин или пароль. Пароль. ".$data['pass']." ".md5(md5($_GET["password"])),
+				'error'  => "Неправильный логин или пароль. Пароль. ",
 			);
 		}
 
@@ -50,6 +50,21 @@ class API{
 		setcookie("key", $hash, time()+60*60*24*30, "/");
 		mysqli_query($api->mysqlConnect, "UPDATE `users` SET `key`='".$hash."' WHERE `id`='".$data['id']."';");
 
+		return array(
+			'success'  => 1,
+		);
+	}
+	function Exit(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Вы не авторизованы.",
+			);
+		}
+		$hash = md5($api->generateCode(10));
+		setcookie("key", "", time()+60*60*24*30, "/");
+		mysqli_query($api->mysqlConnect, "UPDATE `users` SET key='".$hash."' WHERE `id`='".$api->userId."'");
 		return array(
 			'success'  => 1,
 		);
@@ -85,6 +100,8 @@ class CMSCore{
 	<title>Админ-панель</title>
 	<meta charset=\"utf-8\">
 	<script src=\"admin.js\"></script>
+	<link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.3.1/css/all.css\" integrity=\"sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU\" crossorigin=\"anonymous\">
+	<link rel=\"stylesheet\" href=\"admin.css\">
 </head>
 <body>
 ";
@@ -93,6 +110,18 @@ class CMSCore{
 		echo "
 </body>
 </html>";
+	}
+	function UIgetAdminPanel(){
+		echo "
+	<header>
+		<div class=\"logout\">
+			<i class=\"fa fa-sign-out-alt\"></i> Выйти
+		</div>
+		<div class=\"user\">
+			<i class=\"fa fa-user\"></i> ".$this->userLogin."
+		</div>
+	</header>
+	";
 	}
 	function UIgetAuthForm(){
 		echo "

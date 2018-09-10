@@ -5,14 +5,29 @@ var admin = {
 				admin.signin();
 			}
 		}
+		if(document.getElementsByClassName("logout").length>0){
+			document.getElementsByClassName("logout")[0].onclick=function(){
+				admin.signout();
+			}
+		}
+	},
+	signout:function(){
+		admin.ajaxSend("/api/Exit/",function(e){
+			if(e.target.response.success==1){
+				alert("Вы успешно вышли");
+				location.reload();
+			}else{
+				alert("Ошибка. "+e.target.response.error);
+			}
+		});
 	},
 	signin:function(){
 		authlogin = document.getElementsByClassName("loginInput")[0].value;
 		authPassword = document.getElementsByClassName("passwordInput")[0].value;
 		admin.ajaxSend("/api/Auth/?login="+authlogin+"&password="+authPassword,function(e){
-			//console.log(e.target.response.success);
 			if(e.target.response.success==1){
 				alert("Авторизованы");
+				location.reload();
 			}else{
 				alert("Ошибка. "+e.target.response.error);
 			}
