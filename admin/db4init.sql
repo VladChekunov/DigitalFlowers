@@ -7,3 +7,15 @@ CREATE TABLE IF NOT EXISTS `mydb`.`users` (
 ENGINE = InnoDB
 
 INSERT INTO `dflowers`.`users` (`login`, `pass`) VALUES ('Admin', '696d29e0940a4957748fe3fc9efd22a3');
+
+CREATE TABLE `dflowers`.`pages` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `url` VARCHAR(64) NOT NULL,
+  `title` VARCHAR(128) NOT NULL,
+  `source` MEDIUMTEXT NOT NULL,
+  `content` MEDIUMTEXT NOT NULL,
+  `status` INT(1) NOT NULL,
+  `order` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `url_UNIQUE` (`url` ASC),
+  UNIQUE INDEX `title_UNIQUE` (`title` ASC));

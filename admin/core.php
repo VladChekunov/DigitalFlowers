@@ -93,6 +93,17 @@ class CMSCore{
 		}
 		return $code;
 	}
+	function getPage($pageId){
+		if($pageId==-1){
+			include "../template/404.php";
+			return 0;
+		}
+		//get content from db
+		include "../template/header.php";
+		echo $pageId;
+		include "../template/footer.php";
+		return 1;
+	}
 	function UIbeginAdminHeader(){
 		echo "<!DOCTYPE html>
 <html>
