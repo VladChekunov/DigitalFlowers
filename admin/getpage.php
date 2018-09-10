@@ -29,6 +29,8 @@ Render specific page with footer header etc
 			case "GetPages":
 				echo json_encode($api->API->GetPages());
 			break;
+
+
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){

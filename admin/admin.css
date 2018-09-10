@@ -73,3 +73,12 @@ header{
 	vertical-align: inherit;
 	border-color: inherit;
 }
+.btn{
+	display:inline-block;
+	color:#000;
+	background:#fff;
+	border:solid 2px #000;
+	margin:2px;
+	text-decoration:none;
+	padding:6px;
+}

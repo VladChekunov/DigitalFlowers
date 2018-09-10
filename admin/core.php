@@ -208,7 +208,7 @@ class CMSCore{
 				$this->userId=$userdata['id'];
 			}else{
 				$this->userPermission=0;
-				setcookie("hash", "", time() - 3600*24*30*12, "/");
+				setcookie("hash", "", time()+60*60*24*30, "/");
 			}
 		}else{
 			$this->userPermission=0;

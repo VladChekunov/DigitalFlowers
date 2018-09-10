@@ -21,13 +21,14 @@ var admin = {
 		showPagesList:function(){
 			admin.ajaxSend("/api/GetPages/",function(e){
 				if(e.target.response.success==1){
-					pagesList="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>title</th>\n\t<th>url</th>\n\t<th>Edit</th>\n\t<th>Order</th>\n\t<th>Remove</th>\n</tr>\n";
+					pagesList="<a onclick=\"admin.addPage()\" class=\"btn\" href=\"javascript://\">Добавить страницу</a>"
+					pagesList+="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>title</th>\n\t<th>url</th>\n\t<th>Edit</th>\n\t<th>Order</th>\n\t<th>Remove</th>\n</tr>\n";
 					for(var i=0;i<e.target.response.pages.length;i++){
 						pagestatus="enabled_page";
 						if(e.target.response.pages[i].status==0){
 							pagestatus="disabled_page";
 						}
-						pagesList+="<tr class=\""+pagestatus+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\"></td><td><a onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+						pagesList+="<tr class=\""+pagestatus+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\">v/^</td><td><a onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
 					}
 					pagesList+="</table>"
 					document.getElementsByClassName("admin_content")[0].innerHTML=pagesList;
@@ -47,10 +48,13 @@ var admin = {
 						admin.pages.showPagesList();
 						break;
 					case "Users":
+						admin.pages.showUsersList();
 					break;
 					case "Products":
+						admin.pages.showProductsList();
 					break;
 					case "Settings":
+						admin.pages.showSettings();
 					break;
 				}
 				document.getElementsByClassName("menu_active")[0].innerHTML=e.target.innerHTML;
@@ -82,7 +86,9 @@ var admin = {
 		admin.ajaxSend("/api/Auth/?login="+authlogin+"&password="+authPassword,function(e){
 			if(e.target.response.success==1){
 				alert("Авторизованы");
-				location.reload();
+				setTimeout(function(){
+					location.reload();
+				},500)
 			}else{
 				alert("Ошибка. "+e.target.response.error);
 			}
