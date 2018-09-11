@@ -32,9 +32,12 @@ Render specific page with footer header etc
 			case "GetPageById":
 				echo json_encode($api->API->GetPageById());
 			break;
-			
-
-
+			case "savePage":
+				echo json_encode($api->API->savePage());
+			break;
+			case "removePage":
+				echo json_encode($api->API->removePage());
+			break;
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){

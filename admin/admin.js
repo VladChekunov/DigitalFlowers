@@ -18,6 +18,20 @@ var admin = {
 		}
 	},
 	pages:{
+		savePage:function(pageId){
+			url=document.getElementsByClassName("url_field")[0].value;
+			title=document.getElementsByClassName("title_field")[0].value;
+			status=document.getElementsByClassName("status_field")[0].value;
+			source=document.getElementsByClassName("source_field")[0].value;
+
+			admin.ajaxSend("/api/savePage/?id="+pageId+"&url="+url+"&title="+title+"&source="+source+"&status="+status,function(e){
+				if(e.target.response.success==1){
+					alert("Сохранено");
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
+		},
 		editPage:function(pageId){
 			//Back
 			//
@@ -28,14 +42,14 @@ var admin = {
 				if(e.target.response.success==1){
 					console.log(e.target.response);
 					pageProps = '<a onclick=\"admin.pages.showPagesList()\" class=\"btn\" href=\"javascript://\">Back</a><a onclick=\"admin.pages.savePage('+e.target.response.page.id+')\" class=\"btn\" href=\"javascript://\">Save</a>'
-					pageProps += '<div class="page_field"><div class="prop_title">URL</div><input value="'+e.target.response.page.url+'"></div>'
-					pageProps += '<div class="page_field"><div class="prop_title">Title</div><input value="'+e.target.response.page.title+'"></div>'
+					pageProps += '<div class="page_field"><div class="prop_title">URL</div><input class="url_field" value="'+e.target.response.page.url+'"></div>'
+					pageProps += '<div class="page_field"><div class="prop_title">Title</div><input class="title_field" value="'+e.target.response.page.title+'"></div>'
 					statusbar_status = "status_disabled"
 					if(e.target.response.page.status==1){
 						statusbar_status = "status_enabled"
 					}
 					pageProps += '<div class="page_field"><div class="prop_title">Status</div><div class="status '+statusbar_status+'"></div><input class="status_field" style="display:none;" value="'+e.target.response.page.status+'"></div>'
-					pageProps += '<textarea>'+e.target.response.page.source+'</textarea>'
+					pageProps += '<textarea class="source_field">'+e.target.response.page.pagesource+'</textarea>'
 					document.getElementsByClassName("admin_content")[0].innerHTML=pageProps;
 					document.getElementsByClassName("status")[0].onclick=function(){
 						if(document.getElementsByClassName("status_field")[0].value==1){
@@ -53,6 +67,29 @@ var admin = {
 				}
 			});
 		},
+		removePage:function(pageId){
+			//alert(pageId);
+			var newBox = document.createElement("div");
+			newBox.className="dialog_box";
+			newBox.innerHTML="Вы точно хотите удалить страницу? <a class='btn' href='javascript://'>Удалить, ага, е, ага</a>";
+			document.getElementsByClassName("admin_content")[0].appendChild(newBox);
+			var closeWin = function(e){
+				if(e.target.parentNode.className=="dialog_box"){
+					admin.ajaxSend("/api/removePage/?page="+pageId,function(e){
+						if(e.target.response.success==1){
+							alert("Страница удалена.");
+						}else{
+							alert("Ошибка. "+e.target.response.error);
+						}
+					});
+				}
+				document.removeEventListener("click", closeWin , false);
+				newBox.parentNode.removeChild(newBox);
+			}
+			setTimeout(function(){
+				document.addEventListener("click",  closeWin, false);
+			},500)
+		},
 		showPagesList:function(){
 			admin.ajaxSend("/api/GetPages/",function(e){
 				if(e.target.response.success==1){
@@ -63,7 +100,7 @@ var admin = {
 						if(e.target.response.pages[i].status==0){
 							pagestatus="disabled_page";
 						}
-						pagesList+="<tr class=\""+pagestatus+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\">v/^</td><td><a onclick=\"admin.editPage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+						pagesList+="<tr class=\""+pagestatus+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\">v/^</td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
 					}
 					pagesList+="</table>"
 					document.getElementsByClassName("admin_content")[0].innerHTML=pagesList;

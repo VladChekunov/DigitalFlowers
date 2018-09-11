@@ -142,3 +142,20 @@ header{
 .status.status_disabled::before{
 	left:26px;
 }
+
+.dialog_box{
+	display:block;
+	position:absolute;
+	left:0;right:0;
+	top:0;bottom:0;
+	margin:auto;
+	width: 320px;
+	height: 80px;
+	background: #666;
+	padding: 10px;
+	text-align: center;
+}
+
+.dialog_box .btn{
+	margin-top:20px;
+}

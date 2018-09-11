@@ -111,7 +111,7 @@ class API{
 			'id'  => $data["id"],
 			'url'  => $data["url"],
 			'title'  => $data["title"],
-			'source'  => $data["source"],
+			'pagesource'  => $data["source"],
 			'status'  => $data["status"],
 		);
 		return array(
@@ -119,6 +119,48 @@ class API{
 			'page' => $result,
 		);
 		
+	}
+	function savePage(){
+		if(!isset($_GET["id"]) || !isset($_GET["status"]) || !isset($_GET["url"]) || !isset($_GET["title"]) || !isset($_GET["source"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Не введён один из обязательных параметров.",
+			);
+		}
+		//Тут должны быть проверки на валидность
+		/*id*/
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		/*status*/
+		if(!preg_match('/^(0|1)$/', $_GET["status"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Статус не валиден.",
+			);
+		}
+		/*url*/
+		/*title*/
+		/*source*/
+		$content = $_GET["source"];
+		mysqli_query($api->mysqlConnect, "UPDATE `pages` SET `url`='".$_GET["url"]."', `title`='".$_GET["title"]."', `source`='".$_GET["source"]."', `content`='".$content."', `status`='".$_GET["status"]."' WHERE `id`='".$_GET["id"]."';");
+
+		return array(
+			'success'  => 1,
+		);
+	}
+	function removePage(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		//Удаляем поле по id.
 	}
 }
 
