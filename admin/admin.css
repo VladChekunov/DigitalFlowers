@@ -82,3 +82,63 @@ header{
 	text-decoration:none;
 	padding:6px;
 }
+.page_field{
+	margin-bottom:10px;
+}
+.page_field input{
+	padding:0.75rem;
+	width:100%;
+	box-sizing: border-box;
+}
+.page_field .prop_title{
+	font-size:10px;
+	font-weight:bold;
+	text-transform:uppercase;
+	margin-left:20px;
+}
+
+.admin_content textarea{
+	display: block;
+	padding:0.75rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+.page_field .status::before{
+	content:" ";
+	display:block;
+	position:absolute;
+	width:30px;
+	height:30px;
+	margin-top:-10px;
+	border-radius:20px;
+	background: #fefefe;
+	border: solid 2px #333;
+	transition:all 0.4s;
+}
+.page_field .status{
+	cursor:pointer;
+	display:block;
+	width:60px;
+	height:12px;
+	border-radius:6px;
+	background:#00ffff;
+	margin-top:15px;
+	margin-bottom:15px;
+	margin-left:4px;
+	position:relative;
+	transition:all 0.8s;
+}
+
+.status.status_enabled{
+	background:#2ecc71;
+}
+.status.status_enabled::before{
+	left:0;
+}
+
+.status.status_disabled{
+	background:#333;
+}
+.status.status_disabled::before{
+	left:26px;
+}

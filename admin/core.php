@@ -77,7 +77,7 @@ class API{
 				'error'  => "Ошибка доступа.",
 			);
 		}
-		mysqli_select_db($api->mysqlConnect, "pages");
+		//mysqli_select_db($api->mysqlConnect, "pages");
 		$query = mysqli_query($api->mysqlConnect, "SELECT `id`, `url`, `title`, `status`, `order` FROM `pages` ORDER BY `order`;");
 
 		$result = array();
@@ -90,12 +90,35 @@ class API{
 			);
 			$result[] = $listContent;
 		}
-		//Обращаемся к бд и получаем список всех страниц.
 			return array(
 				'success'  => 1,
 				'pages' => $result,
 			);
 
+	}
+	function GetPageById(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		//mysqli_select_db($api->mysqlConnect, "pages");
+		$query = mysqli_query($api->mysqlConnect, "SELECT `id`, `url`, `title`, `source`, `status` FROM `pages` WHERE `id`='".$_GET["id"]."';");
+		$data = mysqli_fetch_assoc($query);
+		$result = array(
+			'id'  => $data["id"],
+			'url'  => $data["url"],
+			'title'  => $data["title"],
+			'source'  => $data["source"],
+			'status'  => $data["status"],
+		);
+		return array(
+			'success'  => 1,
+			'page' => $result,
+		);
+		
 	}
 }
 

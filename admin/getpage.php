@@ -29,6 +29,10 @@ Render specific page with footer header etc
 			case "GetPages":
 				echo json_encode($api->API->GetPages());
 			break;
+			case "GetPageById":
+				echo json_encode($api->API->GetPageById());
+			break;
+			
 
 
 		}
