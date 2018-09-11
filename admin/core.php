@@ -160,6 +160,24 @@ class API{
 				'error'  => "Ошибка доступа.",
 			);
 		}
+		if(!isset($_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не введён.",
+			);
+		}
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		mysqli_query($api->mysqlConnect, "DELETE FROM `pages` WHERE `id`='".$_GET["id"]."';");
+
+		return array(
+			'success'  => 1,
+		);
+
 		//Удаляем поле по id.
 	}
 }

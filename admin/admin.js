@@ -75,9 +75,9 @@ var admin = {
 			document.getElementsByClassName("admin_content")[0].appendChild(newBox);
 			var closeWin = function(e){
 				if(e.target.parentNode.className=="dialog_box"){
-					admin.ajaxSend("/api/removePage/?page="+pageId,function(e){
+					admin.ajaxSend("/api/removePage/?id="+pageId,function(e){
 						if(e.target.response.success==1){
-							alert("Страница удалена.");
+							document.getElementsByClassName("page-"+pageId)[0].parentNode.removeChild(document.getElementsByClassName("page-"+pageId)[0])
 						}else{
 							alert("Ошибка. "+e.target.response.error);
 						}
@@ -100,7 +100,7 @@ var admin = {
 						if(e.target.response.pages[i].status==0){
 							pagestatus="disabled_page";
 						}
-						pagesList+="<tr class=\""+pagestatus+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\">v/^</td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+						pagesList+="<tr class=\""+pagestatus+" page-"+e.target.response.pages[i].id+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\">v/^</td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
 					}
 					pagesList+="</table>"
 					document.getElementsByClassName("admin_content")[0].innerHTML=pagesList;
