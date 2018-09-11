@@ -38,6 +38,9 @@ Render specific page with footer header etc
 			case "removePage":
 				echo json_encode($api->API->removePage());
 			break;
+			case "addPage":
+				echo json_encode($api->API->addPage());
+			break;
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){

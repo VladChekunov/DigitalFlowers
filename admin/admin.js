@@ -18,6 +18,43 @@ var admin = {
 		}
 	},
 	pages:{
+		renderPageEditor:function(e){
+					pageProps = '<a onclick=\"admin.pages.showPagesList()\" class=\"btn\" href=\"javascript://\">Back</a>';
+					if(e.page_id!=-1){
+						pageProps += '<a onclick=\"admin.pages.savePage('+e.page_id+')\" class=\"btn\" href=\"javascript://\">Save</a>'
+					}else{
+						pageProps += '<a onclick=\"admin.pages.addPage()\" class=\"btn\" href=\"javascript://\">Add</a>'
+					}
+					pageProps += '<div class="page_field"><div class="prop_title">URL</div><input class="url_field" value="'+e.page_url+'"></div>'
+					pageProps += '<div class="page_field"><div class="prop_title">Title</div><input class="title_field" value="'+e.page_title+'"></div>'
+					statusbar_status = "status_disabled"
+					if(e.page_status==1){
+						statusbar_status = "status_enabled"
+					}
+					pageProps += '<div class="page_field"><div class="prop_title">Status</div><div class="status '+statusbar_status+'"></div><input class="status_field" style="display:none;" value="'+e.page_status+'"></div>'
+					pageProps += '<textarea class="source_field">'+e.page_source+'</textarea>'
+					document.getElementsByClassName("admin_content")[0].innerHTML=pageProps;
+					document.getElementsByClassName("status")[0].onclick=function(){
+						if(document.getElementsByClassName("status_field")[0].value==1){
+							document.getElementsByClassName("status_field")[0].value=0;
+							document.getElementsByClassName("status")[0].classList.remove("status_enabled");
+							document.getElementsByClassName("status")[0].classList.add("status_disabled");
+						}else{
+							document.getElementsByClassName("status_field")[0].value=1;
+							document.getElementsByClassName("status")[0].classList.remove("status_disabled");
+							document.getElementsByClassName("status")[0].classList.add("status_enabled");
+						}
+					}
+		},
+		newPage:function(){
+					admin.pages.renderPageEditor({
+						page_url:"",
+						page_title:"",
+						page_status:"",
+						page_source:"",
+						page_id:-1
+					});
+		},
 		savePage:function(pageId){
 			url=document.getElementsByClassName("url_field")[0].value;
 			title=document.getElementsByClassName("title_field")[0].value;
@@ -32,36 +69,32 @@ var admin = {
 				}
 			});
 		},
+		addPage:function(){
+			url=document.getElementsByClassName("url_field")[0].value;
+			title=document.getElementsByClassName("title_field")[0].value;
+			status=document.getElementsByClassName("status_field")[0].value;
+			source=document.getElementsByClassName("source_field")[0].value;
+
+			admin.ajaxSend("/api/addPage/?url="+url+"&title="+title+"&source="+source+"&status="+status,function(e){
+				if(e.target.response.success==1){
+					alert("Сохранено");
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
+		},
 		editPage:function(pageId){
-			//Back
-			//
-			//Title
-			//Url
-			//...
 			admin.ajaxSend("/api/GetPageById/?id="+pageId,function(e){
 				if(e.target.response.success==1){
 					console.log(e.target.response);
-					pageProps = '<a onclick=\"admin.pages.showPagesList()\" class=\"btn\" href=\"javascript://\">Back</a><a onclick=\"admin.pages.savePage('+e.target.response.page.id+')\" class=\"btn\" href=\"javascript://\">Save</a>'
-					pageProps += '<div class="page_field"><div class="prop_title">URL</div><input class="url_field" value="'+e.target.response.page.url+'"></div>'
-					pageProps += '<div class="page_field"><div class="prop_title">Title</div><input class="title_field" value="'+e.target.response.page.title+'"></div>'
-					statusbar_status = "status_disabled"
-					if(e.target.response.page.status==1){
-						statusbar_status = "status_enabled"
-					}
-					pageProps += '<div class="page_field"><div class="prop_title">Status</div><div class="status '+statusbar_status+'"></div><input class="status_field" style="display:none;" value="'+e.target.response.page.status+'"></div>'
-					pageProps += '<textarea class="source_field">'+e.target.response.page.pagesource+'</textarea>'
-					document.getElementsByClassName("admin_content")[0].innerHTML=pageProps;
-					document.getElementsByClassName("status")[0].onclick=function(){
-						if(document.getElementsByClassName("status_field")[0].value==1){
-							document.getElementsByClassName("status_field")[0].value=0;
-							document.getElementsByClassName("status")[0].classList.remove("status_enabled");
-							document.getElementsByClassName("status")[0].classList.add("status_disabled");
-						}else{
-							document.getElementsByClassName("status_field")[0].value=1;
-							document.getElementsByClassName("status")[0].classList.remove("status_disabled");
-							document.getElementsByClassName("status")[0].classList.add("status_enabled");
-						}
-					}
+					
+					admin.pages.renderPageEditor({
+						page_url:e.target.response.page.url,
+						page_title:e.target.response.page.title,
+						page_status:e.target.response.page.status,
+						page_source:e.target.response.page.pagesource,
+						page_id:e.target.response.page.id
+					});
 				}else{
 					alert("Ошибка. "+e.target.response.error);
 				}
@@ -93,7 +126,7 @@ var admin = {
 		showPagesList:function(){
 			admin.ajaxSend("/api/GetPages/",function(e){
 				if(e.target.response.success==1){
-					pagesList="<a onclick=\"admin.addPage()\" class=\"btn\" href=\"javascript://\">Add page</a><a onclick=\"admin.saveOrderPages()\" class=\"btn\" href=\"javascript://\">Save Order</a>"
+					pagesList="<a onclick=\"admin.pages.newPage()\" class=\"btn\" href=\"javascript://\">Add page</a><a onclick=\"admin.saveOrderPages()\" class=\"btn\" href=\"javascript://\">Save Order</a>"
 					pagesList+="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>title</th>\n\t<th>url</th>\n\t<th>Edit</th>\n\t<th>Order</th>\n\t<th>Remove</th>\n</tr>\n";
 					for(var i=0;i<e.target.response.pages.length;i++){
 						pagestatus="enabled_page";

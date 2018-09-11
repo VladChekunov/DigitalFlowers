@@ -121,27 +121,32 @@ class API{
 		
 	}
 	function savePage(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
 		if(!isset($_GET["id"]) || !isset($_GET["status"]) || !isset($_GET["url"]) || !isset($_GET["title"]) || !isset($_GET["source"])){
 			return array(
 				'success'  => 0,
 				'error'  => "Не введён один из обязательных параметров.",
 			);
 		}
-		//Тут должны быть проверки на валидность
-		/*id*/
 		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
 			return array(
 				'success'  => 0,
 				'error'  => "Идентификатор не валиден.",
 			);
 		}
-		/*status*/
 		if(!preg_match('/^(0|1)$/', $_GET["status"])){
 			return array(
 				'success'  => 0,
 				'error'  => "Статус не валиден.",
 			);
 		}
+		//Тут должны быть проверки на валидность
 		/*url*/
 		/*title*/
 		/*source*/
@@ -179,6 +184,42 @@ class API{
 		);
 
 		//Удаляем поле по id.
+	}
+	function addPage(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!isset($_GET["status"]) || !isset($_GET["url"]) || !isset($_GET["title"]) || !isset($_GET["source"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Не введён один из обязательных параметров.",
+			);
+		}
+		if(!preg_match('/^(0|1)$/', $_GET["status"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Статус не валиден.",
+			);
+		}
+		//Тут должны быть проверки на валидность
+		/*url*/
+		/*title*/
+		/*source*/
+		$content = $_GET["source"];
+
+		$query = mysqli_query($api->mysqlConnect, "SELECT MAX(`order`)+1 FROM `pages`;");
+		$nextOrder = mysqli_fetch_assoc($query);
+
+		mysqli_query($api->mysqlConnect, "INSERT INTO `pages` (`url`, `title`, `source`, `content`, `status`, `order`) VALUES ('".$_GET["url"]."', '".$_GET["title"]."', '".$_GET["source"]."', '".$content."', '".$_GET["status"]."', '".$nextOrder["MAX(`order`)+1"]."');");
+
+		return array(
+			'success'  => 1,
+		);
+
 	}
 }
 
