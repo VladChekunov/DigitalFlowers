@@ -41,6 +41,9 @@ Render specific page with footer header etc
 			case "addPage":
 				echo json_encode($api->API->addPage());
 			break;
+			case "saveOrderPages":
+				echo json_encode($api->API->saveOrderPages());
+			break;
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){

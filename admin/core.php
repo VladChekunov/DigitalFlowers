@@ -87,6 +87,7 @@ class API{
 				'url'=>$row["url"],
 				'title'=>$row["title"],
 				'status'=>$row["status"],
+				'order'=>$row["order"],
 			);
 			$result[] = $listContent;
 		}
@@ -220,6 +221,32 @@ class API{
 			'success'  => 1,
 		);
 
+	}
+	function saveOrderPages(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!isset($_GET["ids"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификаторы не введёны.",
+			);
+		}
+		$ids = explode(',', $_GET["ids"]);
+		$sqlque = "";
+		for($i = 0; $i < count($ids); $i++){
+			$sqlque.="UPDATE `pages` SET `order`='".$i."' WHERE `id`='".$ids[$i]."';";
+		}
+		mysqli_query($api->mysqlConnect, $sqlque);
+
+		return array(
+			'success'  => 0,
+			'error' => $sqlque,
+		);
 	}
 }
 

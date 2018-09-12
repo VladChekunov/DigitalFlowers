@@ -18,6 +18,22 @@ var admin = {
 		}
 	},
 	pages:{
+		dragAction:false,
+		saveOrderPages:function(){
+			var ids = [];
+			for(var i=1;i<document.getElementsByClassName("pages_list")[0].children[0].children.length;i++){
+				pageTrId = parseInt(document.getElementsByClassName("pages_list")[0].children[0].children[i].classList[1].replace("page-",""));
+				ids.push(pageTrId);
+			}
+				admin.ajaxSend("/api/saveOrderPages/?ids="+ids.join(","),function(e){
+					if(e.target.response.success==1){
+						alert("Порядок сохранён.");
+					}else{
+						alert("Ошибка. "+e.target.response.error);
+					}
+				});
+				
+		},
 		renderPageEditor:function(e){
 					pageProps = '<a onclick=\"admin.pages.showPagesList()\" class=\"btn\" href=\"javascript://\">Back</a>';
 					if(e.page_id!=-1){
@@ -126,19 +142,54 @@ var admin = {
 		showPagesList:function(){
 			admin.ajaxSend("/api/GetPages/",function(e){
 				if(e.target.response.success==1){
-					pagesList="<a onclick=\"admin.pages.newPage()\" class=\"btn\" href=\"javascript://\">Add page</a><a onclick=\"admin.saveOrderPages()\" class=\"btn\" href=\"javascript://\">Save Order</a>"
+					pagesList="<a onclick=\"admin.pages.newPage()\" class=\"btn\" href=\"javascript://\">Add page</a><a onclick=\"admin.pages.saveOrderPages()\" class=\"btn\" href=\"javascript://\">Save Order</a>"
 					pagesList+="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>title</th>\n\t<th>url</th>\n\t<th>Edit</th>\n\t<th>Order</th>\n\t<th>Remove</th>\n</tr>\n";
 					for(var i=0;i<e.target.response.pages.length;i++){
 						pagestatus="enabled_page";
 						if(e.target.response.pages[i].status==0){
 							pagestatus="disabled_page";
 						}
-						pagesList+="<tr class=\""+pagestatus+" page-"+e.target.response.pages[i].id+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td style=\"drag\">v/^</td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+						pagesList+="<tr class=\""+pagestatus+" page-"+e.target.response.pages[i].id+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td class=\"drag\">"+e.target.response.pages[i].order+"</td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
 					}
 					pagesList+="</table>"
 					document.getElementsByClassName("admin_content")[0].innerHTML=pagesList;
-					console.log(e.target.response);
-					//alert("Список страниц получен");
+
+					var firElement;
+					var secElement;
+					var newElement = {innerHTML:null, className:null};
+
+
+					var dragend = function(that){
+						secElement = that.target.parentNode;
+						if(secElement.classList!=undefined){
+						if(secElement.classList[0]=="enabled_page" || secElement.classList[0]=="disabled_page"){
+							newElement.innerHTML = firElement.innerHTML;
+							newElement.className = firElement.className;
+
+							firElement.innerHTML = secElement.innerHTML;
+							firElement.className = secElement.className;
+
+							secElement.innerHTML = newElement.innerHTML;
+							secElement.className = newElement.className;
+						}
+						}
+						document.removeEventListener("mouseup", dragend , false);
+						document.addEventListener('mousedown', dragstart);
+
+					}
+					var dragstart = function(that){
+						firElement = that.target.parentNode;
+						if(firElement.classList!=undefined){
+						if(firElement.classList[0]=="enabled_page" || firElement.classList[0]=="disabled_page"){
+							document.removeEventListener("mousedown", dragstart , false);
+							document.addEventListener('mouseup', dragend);
+						}
+						}
+					}
+					if(admin.pages.dragAction==false){
+						admin.pages.dragAction=true;
+						document.addEventListener('mousedown', dragstart);
+					}
 				}else{
 					alert("Ошибка. "+e.target.response.error);
 				}
