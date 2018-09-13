@@ -241,11 +241,11 @@ class API{
 		for($i = 0; $i < count($ids); $i++){
 			$sqlque.="UPDATE `pages` SET `order`='".$i."' WHERE `id`='".$ids[$i]."';";
 		}
-		mysqli_query($api->mysqlConnect, $sqlque);
+
+		mysqli_multi_query($api->mysqlConnect, $sqlque);
 
 		return array(
-			'success'  => 0,
-			'error' => $sqlque,
+			'success'  => 1,
 		);
 	}
 }
