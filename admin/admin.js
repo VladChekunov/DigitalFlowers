@@ -17,6 +17,13 @@ var admin = {
 			}
 		}
 	},
+
+	users:{
+		showUsersList:function(){
+			alert(7);
+		}
+		//
+	},
 	pages:{
 		dragAction:false,
 		saveOrderPages:function(){
@@ -149,7 +156,7 @@ var admin = {
 						if(e.target.response.pages[i].status==0){
 							pagestatus="disabled_page";
 						}
-						pagesList+="<tr class=\""+pagestatus+" page-"+e.target.response.pages[i].id+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td class=\"drag\">"+e.target.response.pages[i].order+"</td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+						pagesList+="<tr class=\""+pagestatus+" page-"+e.target.response.pages[i].id+"\">\n\t<td>"+e.target.response.pages[i].id+"</td>\n\t<td>"+e.target.response.pages[i].title+"</td>\n\t<td>"+e.target.response.pages[i].url+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td class=\"drag\"><i class=\"fas fa-bars\"></i><div style=\"display:none\">"+e.target.response.pages[i].order+"</div></td><td><a onclick=\"admin.pages.removePage("+e.target.response.pages[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
 					}
 					pagesList+="</table>"
 					document.getElementsByClassName("admin_content")[0].innerHTML=pagesList;
@@ -202,9 +209,9 @@ var admin = {
 				switch(e.target.innerHTML){
 					case "Pages":
 						admin.pages.showPagesList();
-						break;
+					break;
 					case "Users":
-						admin.pages.showUsersList();
+						admin.users.showUsersList();
 					break;
 					case "Products":
 						admin.pages.showProductsList();

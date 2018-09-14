@@ -168,3 +168,6 @@ header{
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none;
 }
+.drag .fas{
+	pointer-events: none;
+}
