@@ -260,6 +260,7 @@ class CMSCore{
 	var $userPermission;//0 - nobody 1 - admin
 	var $userLogin;
 	var $userId;
+	var $userGroup;
 
 	var $API;
 
@@ -357,6 +358,7 @@ class CMSCore{
 				$this->userPermission=1;
 				$this->userLogin=$userdata['login'];
 				$this->userId=$userdata['id'];
+				$this->userGroup=$userdata['group'];
 			}else{
 				$this->userPermission=0;
 				setcookie("hash", "", time()+60*60*24*30, "/");

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`users` (
   `login` VARCHAR(24) NOT NULL,
   `pass` VARCHAR(32) NOT NULL,
   `key` VARCHAR(32) NULL,
+  `group` INT(1) 0,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 
