@@ -248,6 +248,40 @@ class API{
 			'success'  => 1,
 		);
 	}
+	function showUsersList(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if($api->userGroup==0){//Editors
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if($api->userGroup==1){//Moderator
+			$query = mysqli_query($api->mysqlConnect, "SELECT `id`, `login`, `group` FROM `users` WHERE `group` < '2';");
+		}
+		if($api->userGroup==2){//Admin
+			$query = mysqli_query($api->mysqlConnect, "SELECT `id`, `login`, `key`, `group` FROM `users`;");
+		}
+		$result = array();
+		while($row = mysqli_fetch_assoc($query)){
+			$listContent = array(
+				'id'=>$row["id"],
+				'login'=>$row["login"],
+				'group'=>$row["group"],
+			);
+			$result[] = $listContent;
+		}
+		return array(
+			'success'  => 1,
+			'users' => $result,
+		);
+	}
 }
 
 class CMSCore{
@@ -293,9 +327,9 @@ class CMSCore{
 <head>
 	<title>Админ-панель</title>
 	<meta charset=\"utf-8\">
-	<script src=\"admin.js\"></script>
+	<script src=\"/admin/admin.js\"></script>
 	<link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.3.1/css/all.css\" integrity=\"sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU\" crossorigin=\"anonymous\">
-	<link rel=\"stylesheet\" href=\"admin.css\">
+	<link rel=\"stylesheet\" href=\"/admin/admin.css\">
 </head>
 <body>
 ";

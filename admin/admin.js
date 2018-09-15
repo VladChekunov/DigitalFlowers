@@ -1,5 +1,27 @@
 var admin = {
 	init:function(){
+
+	if(document.getElementsByClassName("menu_active").length>0){
+		document.getElementsByClassName("menu_active")[0].onclick=function(){
+			admin.menu.open();
+		}
+		if(location.href.split("/").length>4 && location.href.split("/").length<7 && location.href.split("/")[4]!=""){
+			switch (location.href.split("/")[4]){
+				case "users":	
+					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[1]});
+				break;
+				case "products":
+				alert("p")
+				break;
+				case "settings":
+				alert("s")
+				break;
+			}
+		}else{
+			admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[0]});
+		}
+	}
+
 		if(document.getElementsByClassName("signInBtn").length>0){
 			document.getElementsByClassName("signInBtn")[0].onclick=function(){
 				admin.signin();
@@ -10,17 +32,29 @@ var admin = {
 				admin.signout();
 			}
 		}
-		if(document.getElementsByClassName("menu_active").length>0){
-			admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[0]});
-			document.getElementsByClassName("menu_active")[0].onclick=function(){
-				admin.menu.open();
-			}
-		}
 	},
 
 	users:{
+		typeNames:["Редактор", "Модератор", "Администратор"],
 		showUsersList:function(){
-			alert(7);
+			admin.ajaxSend("/api/showUsersList/",function(e){
+				if(e.target.response.success==1){
+					console.log(e.target.response.users[0]);
+					usersList="<a onclick=\"admin.users.newUser()\" class=\"btn\" href=\"javascript://\">Add User</a>";
+					usersList+="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>login</th>\n\t<th>group</th>\n\t<th>Edit</th>\n\t<th>Remove</th>\n</tr>\n";
+					for(var i=0;i<e.target.response.users.length;i++){
+						usersList+="<tr class=\"user-"+e.target.response.users[i].id+"\">\n\t<td>"+e.target.response.users[i].id+"</td>\n\t<td>"+e.target.response.users[i].login+"</td>\n\t<td>"+admin.users.typeNames[parseInt(e.target.response.users[i].group)]+"</td>\n\t<td><a class=\"btn\" onclick=\"admin.users.editUser("+e.target.response.users[i].id+")\" href=\"javascript://\">Edit</a></td>\n\t<td><a onclick=\"admin.users.removeUser("+e.target.response.users[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>"
+						//usersList+="<tr class=\"user-"+e.target.response.users[i].id+"\">\n\t<td>"+e.target.response.users[i].id+"</td>\n\t<td>"+e.target.response.users[i].login+"</td>\n\t<td>"+e.target.response.users[i].group+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td><a onclick=\"admin.pages.removePage("+e.target.response.users[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+
+					}
+
+					usersList+="</table>";
+					document.getElementsByClassName("admin_content")[0].innerHTML=usersList;
+					//console.log(e.target.response.users[0].login);
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
 		}
 		//
 	},
