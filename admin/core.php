@@ -282,6 +282,87 @@ class API{
 			'users' => $result,
 		);
 	}
+	function removeUser(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if($api->userGroup==0){//Editors
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		$query = mysqli_query($api->mysqlConnect, "SELECT `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
+		$data = mysqli_fetch_assoc($query);
+		if($data["group"]>$api->userGroup){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+
+		mysqli_query($api->mysqlConnect, "DELETE FROM `users` WHERE `id`='".$_GET["id"]."';");
+
+		return array(
+			'success'  => 1,
+		);
+	}
+	function GetUserById(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if($api->userGroup==0){//Editors
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		$query = mysqli_query($api->mysqlConnect, "SELECT `id`, `login`, `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
+		$data = mysqli_fetch_assoc($query);
+		if($data["group"]>$api->userGroup){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+
+		$result = array(
+			'id'  => $data["id"],
+			'login'  => $data["login"],
+			'group'  => $data["group"],
+		);
+
+
+		return array(
+			'success'  => 1,
+			'user' => $result,
+		);
+		
+		//
+	}
+	function editUser(){
+		//
+	}
 }
 
 class CMSCore{

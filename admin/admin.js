@@ -11,10 +11,10 @@ var admin = {
 					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[1]});
 				break;
 				case "products":
-				alert("p")
+					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[2]});
 				break;
 				case "settings":
-				alert("s")
+					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[3]});
 				break;
 			}
 		}else{
@@ -36,15 +36,99 @@ var admin = {
 
 	users:{
 		typeNames:["Редактор", "Модератор", "Администратор"],
+
+		outUser:function(id){//TODO
+			//log out user with specific id
+		},
+		renderUserEditor:function(e){
+			userProps = '<a onclick=\"admin.users.showUsersList()\" class=\"btn\" href=\"javascript://\">Back</a>';
+
+					if(e.page_id!=-1){
+						userProps += '<a onclick=\"admin.users.saveUser('+e.user_id+')\" class=\"btn\" href=\"javascript://\">Save</a>'
+					}else{
+						userProps += '<a onclick=\"admin.users.addUser()\" class=\"btn\" href=\"javascript://\">Add</a>'
+					}
+
+					userProps += '<div class="user_field"><div class="prop_login">Login</div><input class="url_field" value="'+e.user_login+'"></div>'
+					
+					userProps += '<select>';
+					for(var i = 0;i<admin.users.typeNames.length;i++){
+						if(e.user_group==i){
+							userProps += '<option value="'+i+'" selected>'+admin.users.typeNames[i]+'</option>';
+						}else{
+							userProps += '<option value="'+i+'">'+admin.users.typeNames[i]+'</option>';
+						}
+					}
+					userProps += '</select>';
+
+					//'<div class="user_field"><div class="prop_group">Group</div><input class="title_field" value="'++'"></div>'
+
+
+					userProps += '<div class="user_field"><div class="prop_title">Password</div><input class="title_field" value="'+e.user_password+'"></div>'
+					document.getElementsByClassName("admin_content")[0].innerHTML=userProps;
+			//UserEditor
+			//id
+
+			//login
+			//group
+			//password
+			
+		},
+		editUser:function(uid){
+			admin.ajaxSend("/api/GetUserById/?id="+uid,function(e){
+				if(e.target.response.success==1){					
+					admin.users.renderUserEditor({
+						user_password: "",
+						user_login: e.target.response.user.login,
+						user_group: e.target.response.user.group,
+						user_id: e.target.response.user.id
+					});
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
+		},
+		newUser:function(){
+					admin.users.renderUserEditor({
+						user_login:"",
+						user_group:"",
+						user_password:"",
+						user_id:-1
+					});
+		},
+
+
+
+		removeUser:function(uid){
+			var newBox = document.createElement("div");
+			newBox.className="dialog_box";
+			newBox.innerHTML="Вы точно хотите удалить пользователя? <a class='btn' href='javascript://'>Удалить</a>";
+			document.getElementsByClassName("admin_content")[0].appendChild(newBox);
+			var closeWin = function(e){
+				if(e.target.parentNode.className=="dialog_box"){
+					admin.ajaxSend("/api/removeUser/?id="+uid,function(e){
+						if(e.target.response.success==1){
+							document.getElementsByClassName("user-"+uid)[0].parentNode.removeChild(document.getElementsByClassName("user-"+uid)[0])
+						}else{
+							alert("Ошибка. "+e.target.response.error);
+						}
+					});
+				}
+				document.removeEventListener("click", closeWin , false);
+				newBox.parentNode.removeChild(newBox);
+			}
+			setTimeout(function(){
+				document.addEventListener("click",  closeWin, false);
+			},500);
+		},
 		showUsersList:function(){
 			admin.ajaxSend("/api/showUsersList/",function(e){
 				if(e.target.response.success==1){
-					console.log(e.target.response.users[0]);
+					//console.log(e.target.response.users[0]);
 					usersList="<a onclick=\"admin.users.newUser()\" class=\"btn\" href=\"javascript://\">Add User</a>";
-					usersList+="<table class='pages_list'>\n<tr>\n\t<th>id</th>\n\t<th>login</th>\n\t<th>group</th>\n\t<th>Edit</th>\n\t<th>Remove</th>\n</tr>\n";
+					usersList+="<table class='pages_list'>\n<tr>\n\t<th>Id</th>\n\t<th>Login</th>\n\t<th>Group</th>\n\t<th>Signout</th>\n\t<th>Edit</th>\n\t<th>Remove</th>\n</tr>\n";
 					for(var i=0;i<e.target.response.users.length;i++){
-						usersList+="<tr class=\"user-"+e.target.response.users[i].id+"\">\n\t<td>"+e.target.response.users[i].id+"</td>\n\t<td>"+e.target.response.users[i].login+"</td>\n\t<td>"+admin.users.typeNames[parseInt(e.target.response.users[i].group)]+"</td>\n\t<td><a class=\"btn\" onclick=\"admin.users.editUser("+e.target.response.users[i].id+")\" href=\"javascript://\">Edit</a></td>\n\t<td><a onclick=\"admin.users.removeUser("+e.target.response.users[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>"
-						//usersList+="<tr class=\"user-"+e.target.response.users[i].id+"\">\n\t<td>"+e.target.response.users[i].id+"</td>\n\t<td>"+e.target.response.users[i].login+"</td>\n\t<td>"+e.target.response.users[i].group+"</td><td><a class=\"btn\" onclick=\"admin.pages.editPage("+e.target.response.pages[i].id+")\" href=\"javascript://\">Edit</a></td><td><a onclick=\"admin.pages.removePage("+e.target.response.users[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>\n";
+						usersList+="<tr class=\"user-"+e.target.response.users[i].id+"\">\n\t<td>"+e.target.response.users[i].id+"</td>\n\t<td>"+e.target.response.users[i].login+"</td>\n\t<td>"+admin.users.typeNames[parseInt(e.target.response.users[i].group)]+"</td>\n\t<td><a onclick=\"admin.users.outUser("+e.target.response.users[i].id+")\" class=\"btn\" href=\"javascript://\">Exit</a></td>\n\t<td><a class=\"btn\" onclick=\"admin.users.editUser("+e.target.response.users[i].id+")\" href=\"javascript://\">Edit</a></td>\n\t<td><a onclick=\"admin.users.removeUser("+e.target.response.users[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>";
 
 					}
 
@@ -143,7 +227,7 @@ var admin = {
 		editPage:function(pageId){
 			admin.ajaxSend("/api/GetPageById/?id="+pageId,function(e){
 				if(e.target.response.success==1){
-					console.log(e.target.response);
+					//console.log(e.target.response);
 					
 					admin.pages.renderPageEditor({
 						page_url:e.target.response.page.url,
@@ -243,15 +327,19 @@ var admin = {
 				switch(e.target.innerHTML){
 					case "Pages":
 						admin.pages.showPagesList();
+						window.history.pushState('/admin/', 'Pages', '/admin/');
 					break;
 					case "Users":
 						admin.users.showUsersList();
+						window.history.pushState('/admin/users/', 'Users', '/admin/users/');
 					break;
 					case "Products":
 						admin.pages.showProductsList();
+						window.history.pushState('/admin/products/', 'Products', '/admin/products/');
 					break;
 					case "Settings":
 						admin.pages.showSettings();
+						window.history.pushState('/admin/settings/', 'Settings', '/admin/settings/');
 					break;
 				}
 				document.getElementsByClassName("menu_active")[0].innerHTML=e.target.innerHTML;

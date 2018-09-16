@@ -47,6 +47,12 @@ Render specific page with footer header etc
 			case "showUsersList":
 				echo json_encode($api->API->showUsersList());
 			break;
+			case "removeUser":
+				echo json_encode($api->API->removeUser());
+			break;
+			case "GetUserById":
+				echo json_encode($api->API->GetUserById());
+			break;
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){

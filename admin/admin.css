@@ -82,15 +82,15 @@ header{
 	text-decoration:none;
 	padding:6px;
 }
-.page_field{
+.page_field, .user_field{
 	margin-bottom:10px;
 }
-.page_field input{
+.page_field input, .user_field input{
 	padding:0.75rem;
 	width:100%;
 	box-sizing: border-box;
 }
-.page_field .prop_title{
+.page_field .prop_title, .user_field .prop_title,{
 	font-size:10px;
 	font-weight:bold;
 	text-transform:uppercase;
