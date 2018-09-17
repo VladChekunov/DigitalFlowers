@@ -357,8 +357,109 @@ class API{
 			'success'  => 1,
 			'user' => $result,
 		);
+	}
+	function outUser(){
+		global $api;
+		if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if($api->userGroup==0){//Editors
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		$query = mysqli_query($api->mysqlConnect, "SELECT `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
+		$data = mysqli_fetch_assoc($query);
+		if($data["group"]>$api->userGroup){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+
+		$hash = md5($api->generateCode(10));
+		mysqli_query($api->mysqlConnect, "UPDATE `users` SET `key`='".$hash."' WHERE `id`='".$_GET["id"]."';");
+
+		return array(
+			'success'  => 1,
+		);
 		
-		//
+	}
+	function addUser(){
+		global $api;
+		if($api->userPermission==0){//Ты не авторизован
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if($api->userGroup==0){//Редакторы не могут менять пользователей
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!isset($_GET["login"]) || !isset($_GET["password"]) || !isset($_GET["group"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Отсутствует один или несколько обязательных параметров.",
+			);
+		}
+		if($_GET["group"]!=0 && $_GET["group"]!=1 && $_GET["group"]!=2){
+			return array(
+				'success'  => 0,
+				'error'  => "Группа задана не валидно.",
+			);
+		}
+		//TODO if your permission less then user
+		if($api->userGroup<$_GET["group"]){
+			return array(
+				'success'  => 0,
+				'error'  => "Нельзя создать пользователя рангом выше себя.",
+			);
+		}
+		if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){//TODO
+			return array(
+				'success'  => 0,
+				'error'  => "Логин не валиден.",
+			);
+		}
+		if(strlen($_GET['password'])<8 || strlen($_GET['password'])>32){
+			return array(
+				'success'  => 0,
+				'error'  => "Пароль не валиден.",
+			);
+		}
+ 
+		//Check if user not already exits
+		$query = mysqli_query($api->mysqlConnect, "SELECT `id` FROM `users` WHERE `login` = '".$_GET["login"]."';");
+		$data = mysqli_fetch_assoc($query);
+		if($data!=NULL){
+			return array(
+				'success'  => 0,
+				'error'  => "Пользователь с таким логином уже существует.",
+			);
+		}
+
+		$hash = md5($api->generateCode(10));
+		mysqli_query($api->mysqlConnect, "INSERT INTO `users` (`login`, `pass`, `group`, `key`) VALUES ('".$_GET["login"]."', '".md5(md5($_GET['password']))."', '".$_GET["group"]."','".$hash."');");
+
+		return array(
+			'success'  => 1,
+		);
+
+		
+		
 	}
 	function editUser(){
 		//
@@ -437,6 +538,7 @@ class CMSCore{
 		</div>
 		<div class=\"user\">
 			<i class=\"fa fa-user\"></i> ".$this->userLogin."
+			<div style=\"display:none;\" class=\"user_permission\">".$this->userGroup."</div>
 		</div>
 	</header>
 	<div class=\"admin_content\"></div>
@@ -476,7 +578,7 @@ class CMSCore{
 				$this->userGroup=$userdata['group'];
 			}else{
 				$this->userPermission=0;
-				setcookie("hash", "", time()+60*60*24*30, "/");
+				setcookie("key", "", time()+60*60*24*30, "/");
 			}
 		}else{
 			$this->userPermission=0;

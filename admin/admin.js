@@ -1,6 +1,11 @@
 var admin = {
+	permission:null,
 	init:function(){
+	
 
+	if(document.getElementsByClassName("user_permission").length>0){
+	admin.permission = parseInt(document.getElementsByClassName("user_permission")[0].innerHTML);
+	}
 	if(document.getElementsByClassName("menu_active").length>0){
 		document.getElementsByClassName("menu_active")[0].onclick=function(){
 			admin.menu.open();
@@ -36,23 +41,46 @@ var admin = {
 
 	users:{
 		typeNames:["Редактор", "Модератор", "Администратор"],
+		saveUser:function(){
+			//Save User
+		},
+		addUser:function(id){
+			//Add User
+			login=document.getElementsByClassName("login_field")[0].value;
+			password=document.getElementsByClassName("password_field")[0].value;
+			group=document.getElementsByClassName("group_field")[0].value;
 
-		outUser:function(id){//TODO
+			admin.ajaxSend("/api/addUser/?login="+login+"&group="+group+"&password="+password,function(e){
+				if(e.target.response.success==1){
+					alert("Сохранено");
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
+		},
+		outUser:function(id){
+			admin.ajaxSend("/api/outUser/?id="+id,function(e){
+				if(e.target.response.success==1){
+					alert("Пользователь вышел.");
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
 			//log out user with specific id
 		},
 		renderUserEditor:function(e){
 			userProps = '<a onclick=\"admin.users.showUsersList()\" class=\"btn\" href=\"javascript://\">Back</a>';
 
-					if(e.page_id!=-1){
+					if(e.user_id!=-1){
 						userProps += '<a onclick=\"admin.users.saveUser('+e.user_id+')\" class=\"btn\" href=\"javascript://\">Save</a>'
 					}else{
 						userProps += '<a onclick=\"admin.users.addUser()\" class=\"btn\" href=\"javascript://\">Add</a>'
 					}
 
-					userProps += '<div class="user_field"><div class="prop_login">Login</div><input class="url_field" value="'+e.user_login+'"></div>'
+					userProps += '<div class="user_field"><div class="prop_login">Login</div><input class="login_field" value="'+e.user_login+'"></div>'
 					
-					userProps += '<select>';
-					for(var i = 0;i<admin.users.typeNames.length;i++){
+					userProps += '<select class="group_field">';
+					for(var i = 0;i<admin.permission+1;i++){
 						if(e.user_group==i){
 							userProps += '<option value="'+i+'" selected>'+admin.users.typeNames[i]+'</option>';
 						}else{
@@ -64,7 +92,7 @@ var admin = {
 					//'<div class="user_field"><div class="prop_group">Group</div><input class="title_field" value="'++'"></div>'
 
 
-					userProps += '<div class="user_field"><div class="prop_title">Password</div><input class="title_field" value="'+e.user_password+'"></div>'
+					userProps += '<div class="user_field"><div class="prop_title">Password</div><input class="password_field" value="'+e.user_password+'"></div>'
 					document.getElementsByClassName("admin_content")[0].innerHTML=userProps;
 			//UserEditor
 			//id
