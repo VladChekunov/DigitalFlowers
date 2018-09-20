@@ -41,18 +41,36 @@ var admin = {
 
 	users:{
 		typeNames:["Редактор", "Модератор", "Администратор"],
-		saveUser:function(){
-			//Save User
+		saveUser:function(uid){
+			var dataList = "/api/saveUser/?";
+			dataList+="id="+uid;
+			if(document.getElementsByClassName("password_field")[0].value!==""){
+				dataList+="&password="+document.getElementsByClassName("password_field")[0].value;
+			}
+			if(document.getElementsByClassName("login_field")[0].value!==""){
+				dataList+="&login="+document.getElementsByClassName("login_field")[0].value;
+			}
+			if(document.getElementsByClassName("group_field")[0].value!==""){
+				dataList+="&group="+document.getElementsByClassName("group_field")[0].value;
+			}
+			admin.ajaxSend(dataList,function(e){
+				if(e.target.response.success==1){
+					alert("Пользователь сохранён.");
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
+
 		},
 		addUser:function(id){
-			//Add User
 			login=document.getElementsByClassName("login_field")[0].value;
 			password=document.getElementsByClassName("password_field")[0].value;
 			group=document.getElementsByClassName("group_field")[0].value;
 
 			admin.ajaxSend("/api/addUser/?login="+login+"&group="+group+"&password="+password,function(e){
 				if(e.target.response.success==1){
-					alert("Сохранено");
+					alert("Пользователь добавлен.");
+					admin.users.showUsersList();
 				}else{
 					alert("Ошибка. "+e.target.response.error);
 				}

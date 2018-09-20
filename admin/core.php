@@ -421,7 +421,17 @@ class API{
 				'error'  => "Группа задана не валидно.",
 			);
 		}
+
 		//TODO if your permission less then user
+		$query = mysqli_query($api->mysqlConnect, "SELECT `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
+		$data = mysqli_fetch_assoc($query);
+		if($data["group"]>$api->userGroup){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+
 		if($api->userGroup<$_GET["group"]){
 			return array(
 				'success'  => 0,
@@ -461,8 +471,76 @@ class API{
 		
 		
 	}
-	function editUser(){
-		//
+	function saveUser(){
+		global $api;
+		if($api->userPermission==0){//Ты не авторизован
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!isset($_GET['id'])){
+			return array(
+				'success'  => 0,
+				'error'  => "Отсутствует один или несколько обязательных параметров.",
+			);
+		}
+
+		//TODO Check user group and your group
+		$query = mysqli_query($api->mysqlConnect, "SELECT `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
+		$data = mysqli_fetch_assoc($query);
+		if($data["group"]>$api->userGroup){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+
+		if(!isset($_GET["password"]) && !isset($_GET["login"]) && !isset($_GET["group"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Отсутствует один или несколько обязательных параметров.",
+			);
+		}
+
+		$sqlQueryes = array();
+		if(isset($_GET["password"])){
+			if(strlen($_GET['password'])<8 || strlen($_GET['password'])>32){
+				return array(
+					'success'  => 0,
+					'error'  => "Пароль не валиден.",
+				);
+			}
+
+			$sqlQueryes[]=" `pass`='".md5(md5($_GET['password']))."'";
+		}
+		if(isset($_GET["login"])){
+			if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){
+				return array(
+					'success'  => 0,
+					'error'  => "Логин не валиден.",
+				);
+			}
+
+			$sqlQueryes[]=" `login`='".$_GET['login']."'";
+		}
+		if(isset($_GET["group"])){
+			if($_GET['group']!=0 && $_GET['group']!=1 && $_GET['group']!=2){
+				return array(
+					'success'  => 0,
+					'error'  => "Группа не валидна.",
+				);
+			}
+
+			$sqlQueryes[]=" `group`='".$_GET['group']."'";
+		}
+		$queryString = join(', ', $sqlQueryes);
+		mysqli_query($api->mysqlConnect, "UPDATE `users` SET ".$queryString." WHERE `id`='".$_GET['id']."';");
+
+		return array(
+			'success'  => 1,
+		);
+
 	}
 }
 

@@ -59,6 +59,9 @@ Render specific page with footer header etc
 			case "addUser":
 				echo json_encode($api->API->addUser());
 			break;
+			case "saveUser":
+				echo json_encode($api->API->saveUser());
+			break;
 		}
 	}else{
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){
