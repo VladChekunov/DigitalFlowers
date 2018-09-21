@@ -422,16 +422,6 @@ class API{
 			);
 		}
 
-		//TODO if your permission less then user
-		$query = mysqli_query($api->mysqlConnect, "SELECT `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
-		$data = mysqli_fetch_assoc($query);
-		if($data["group"]>$api->userGroup){
-			return array(
-				'success'  => 0,
-				'error'  => "Ошибка доступа.",
-			);
-		}
-
 		if($api->userGroup<$_GET["group"]){
 			return array(
 				'success'  => 0,

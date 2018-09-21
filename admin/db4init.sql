@@ -1,22 +1,35 @@
-CREATE TABLE IF NOT EXISTS `mydb`.`users` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `login` VARCHAR(24) NOT NULL,
-  `pass` VARCHAR(32) NOT NULL,
-  `key` VARCHAR(32) NULL,
-  `group` INT(1) 0,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login` varchar(24) NOT NULL,
+  `pass` varchar(32) NOT NULL,
+  `key` varchar(32) DEFAULT NULL,
+  `group` int(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 INSERT INTO `dflowers`.`users` (`login`, `pass`) VALUES ('Admin', '696d29e0940a4957748fe3fc9efd22a3');
 
-CREATE TABLE `dflowers`.`pages` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `url` VARCHAR(64) NOT NULL,
-  `title` VARCHAR(128) NOT NULL,
-  `source` MEDIUMTEXT NOT NULL,
-  `content` MEDIUMTEXT NOT NULL,
-  `status` INT(1) NOT NULL,
-  `order` VARCHAR(45) NOT NULL,
+CREATE TABLE `pages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(64) NOT NULL,
+  `title` varchar(128) NOT NULL,
+  `source` mediumtext NOT NULL,
+  `content` mediumtext NOT NULL,
+  `status` int(1) NOT NULL,
+  `order` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `url_UNIQUE` (`url` ASC),
-  UNIQUE INDEX `title_UNIQUE` (`title` ASC));
+  UNIQUE KEY `url_UNIQUE` (`url`),
+  UNIQUE KEY `title_UNIQUE` (`title`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `products` (
+  `product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `price` int(10) NOT NULL,
+  `old_price` int(10) DEFAULT NULL,
+  `quantity` int(10) NOT NULL DEFAULT '0',
+  `image` varchar(128) NOT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;

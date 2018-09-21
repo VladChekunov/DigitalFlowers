@@ -38,7 +38,11 @@ var admin = {
 			}
 		}
 	},
-
+	products:{
+		showProductsList:function(){
+			alert("))");
+		}
+	},
 	users:{
 		typeNames:["Редактор", "Модератор", "Администратор"],
 		saveUser:function(uid){
@@ -56,6 +60,7 @@ var admin = {
 			admin.ajaxSend(dataList,function(e){
 				if(e.target.response.success==1){
 					alert("Пользователь сохранён.");
+					admin.users.showUsersList();
 				}else{
 					alert("Ошибка. "+e.target.response.error);
 				}
@@ -380,7 +385,7 @@ var admin = {
 						window.history.pushState('/admin/users/', 'Users', '/admin/users/');
 					break;
 					case "Products":
-						admin.pages.showProductsList();
+						admin.products.showProductsList();
 						window.history.pushState('/admin/products/', 'Products', '/admin/products/');
 					break;
 					case "Settings":
