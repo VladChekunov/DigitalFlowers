@@ -44,6 +44,7 @@ Render specific page with footer header etc
 			case "saveOrderPages":
 				echo json_encode($api->API->saveOrderPages());
 			break;
+
 			case "showUsersList":
 				echo json_encode($api->API->showUsersList());
 			break;
@@ -61,6 +62,22 @@ Render specific page with footer header etc
 			break;
 			case "saveUser":
 				echo json_encode($api->API->saveUser());
+			break;
+
+			case "showProductsList":
+				echo json_encode($api->API->showProductsList());
+			break;
+			case "removeProduct":
+				echo json_encode($api->API->removeProduct());
+			break;
+			case "GetProductById":
+				echo json_encode($api->API->GetProductById());
+			break;
+			case "addProduct":
+				echo json_encode($api->API->addProduct());
+			break;
+			case "saveProduct":
+				echo json_encode($api->API->saveProduct());
 			break;
 		}
 	}else{

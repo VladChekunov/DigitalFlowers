@@ -532,6 +532,34 @@ class API{
 		);
 
 	}
+
+	function showProductsList(){
+		global $api;
+		if($api->userPermission==0){//Ты не авторизован
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+
+		$query = mysqli_query($api->mysqlConnect, "SELECT `product_id`, `name`, `price`, `image` FROM `products`;");
+
+		$result = array();
+		while($row = mysqli_fetch_assoc($query)){
+			$listContent = array(
+				'id'=>$row["product_id"],
+				'product_name'=>$row["name"],
+				'price'=>$row["price"],
+				'image'=>$row["image"],
+			);
+			$result[] = $listContent;
+		}
+		return array(
+			'success'  => 1,
+			'products' => $result,
+		);
+
+	}
 }
 
 class CMSCore{

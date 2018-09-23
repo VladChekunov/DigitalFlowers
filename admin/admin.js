@@ -40,7 +40,20 @@ var admin = {
 	},
 	products:{
 		showProductsList:function(){
-			alert("))");
+			admin.ajaxSend("/api/showProductsList/",function(e){
+				if(e.target.response.success==1){
+					productsList="<a onclick=\"admin.users.newProduct()\" class=\"btn\" href=\"javascript://\">Add Product</a>";
+					productsList+="<table class='pages_list'>\n<tr>\n\t<th>Id</th>\n\t<th>Name</th>\n\t<th>Price</th>\n\t<th>Image</th>\n\t<th>Edit</th>\n\t<th>Remove</th>\n</tr>\n";
+					for(var i=0;i<e.target.response.products.length;i++){
+						productsList+="<tr class=\"product-"+e.target.response.products[i].id+"\">\n\t<td>"+e.target.response.products[i].id+"</td>\n\t<td>"+e.target.response.products[i].product_name+"</td>\n\t<td>"+e.target.response.products[i].price+"</td>\n\t<td>"+e.target.response.products[i].image+"</td>\n\t<td><a class=\"btn\" onclick=\"admin.users.editProduct("+e.target.response.products[i].id+")\" href=\"javascript://\">Edit</a></td>\n\t<td><a onclick=\"admin.users.removeProduct("+e.target.response.products[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>";
+					}
+
+					productsList+="</table>";
+					document.getElementsByClassName("admin_content")[0].innerHTML=productsList;
+				}else{
+					alert("Ошибка. "+e.target.response.error);
+				}
+			});
 		}
 	},
 	users:{
