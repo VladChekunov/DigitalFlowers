@@ -587,13 +587,42 @@ class API{
 	 );
 	}
 	function GetProductById(){
-	
+	 global $api;
+	 if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		
+		
 	}
 	function addProduct(){
-	
+	 global $api;
+	 if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		
+		return array(
+	  'success' => 1
+	 );
 	}
 	function saveProduct(){
-	
+	 global $api;
+	 if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		
+		
+		return array(
+	  'success' => 1
+	 );
 	}
 }
 
