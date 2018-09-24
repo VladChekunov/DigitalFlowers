@@ -84,7 +84,7 @@ Render specific page with footer header etc
 		if(sizeof($get_reqs)>2 && $get_reqs[2]!=NULL){
 			$api->getPage(-1);
 		}else{
-			$query = mysqli_query($api->mysqlConnect, "SELECT `url`,`id` FROM dflowers.pages WHERE `status`=1 ORDER by `order`;");
+			$query = mysqli_query($api->mysqlConnect, "SELECT `url`,`id` FROM `pages` WHERE `status`=1 ORDER by `order`;");
 			$isPageFind=false;
 			while($row = mysqli_fetch_assoc($query)){
 				if(sizeof($get_reqs)<1 || $get_reqs[1]==NULL){

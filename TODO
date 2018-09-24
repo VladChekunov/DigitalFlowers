@@ -1,16 +1,19 @@
-Корзина
-Админ-панель
-	Список товаров
-		Добавить
-		Редактировать
-		Открыть страницы
-		Открыть страницу
-		Удалить
-	Список констант
-		Добавить
-		Редактировать
-		Открыть страницы
-		Открыть страницу
-		Удалить
-	Список картиночек?
+Cart
+Admin Panel
+	Products list
+	 Pages of product list and offsets
+		Add
+		Edit
+		Remove
+	Constants list
+		Add
+		DB model
+		 id
+		 field_name
+		 field_type
+		 field_value
+		Show list
+		Edit
+		Remove
+	Pictures list?
 	JS GUI then long innerHTML pasting

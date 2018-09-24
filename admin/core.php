@@ -560,6 +560,18 @@ class API{
 		);
 
 	}
+	function removeProduct(){
+	
+	}
+	function GetProductById(){
+	
+	}
+	function addProduct(){
+	
+	}
+	function saveProduct(){
+	
+	}
 }
 
 class CMSCore{
