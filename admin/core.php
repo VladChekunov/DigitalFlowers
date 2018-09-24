@@ -561,7 +561,30 @@ class API{
 
 	}
 	function removeProduct(){
-	
+	 global $api;
+	 if($api->userPermission==0){
+			return array(
+				'success'  => 0,
+				'error'  => "Ошибка доступа.",
+			);
+		}
+		if(!isset($_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не введён.",
+			);
+		}
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		mysqli_query($api->mysqlConnect, "DELETE FROM `products` WHERE `id`='".$_GET["id"]."';");
+		
+	 return array(
+	  'success' => 1
+	 );
 	}
 	function GetProductById(){
 	
