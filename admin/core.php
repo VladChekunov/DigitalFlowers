@@ -595,7 +595,18 @@ class API{
 			);
 		}
 		
+		$query = mysqli_query($api->mysqlConnect, "SELECT * FROM `products` WHERE `product_id`='".$_GET['id']."';");
+		$row = mysqli_fetch_assoc($query);
 		
+		return array(
+		 'success' => 1,
+		 'id' => $row['product_id'],
+		 'price' => $row['price'],
+		 'old_price' => $row['old_price'],
+		 'quantity' => $row['quantity'],
+		 'image' => $row['image'],
+		 'description' => $row['description'],
+		);
 	}
 	function addProduct(){
 	 global $api;
