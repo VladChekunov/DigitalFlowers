@@ -288,3 +288,67 @@ footer{
 	color:#fff;
 	text-decoration:none;
 }
+
+
+@media (min-width:980px) and (max-width:1300px){
+	footer{
+		padding-left: 140px;
+		padding-right: 140px;
+	}
+}
+@media (min-width:740px) and (max-width:980px){
+	footer{
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	footer .col-3{
+		width:50%;
+	}
+	header{
+		padding-left:10px;
+		padding-right:10px;
+		height: 140px;
+	}
+	nav{
+		margin-top: 98px;
+	}
+}
+@media (max-width:740px){
+	footer{
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+	footer .col-3{
+		width:100%;
+	}
+	header{
+		padding-left:10px;
+		padding-right:10px;
+		height: 440px;
+	}
+	header .logo{
+		text-align:center;
+		margin-top:0;
+		display:block;
+		float:none;
+		clear:both;
+		margin: 0 auto;
+		height: 60px;
+	}
+	header .phone{
+		display:block;
+		float:none;
+		clear:both;
+	}
+	header nav{
+		display:block;
+		float:none;
+		clear:both;
+		position:relative;
+		text-align:left;
+		margin-top:10px;
+	}
+	nav{
+		margin-top: 98px;
+	}
+}
