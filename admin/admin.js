@@ -1,31 +1,41 @@
 var admin = {
 	permission:null,
+	ui:{
+		consts:{
+			ICON_DANGER:"fas fa-exclamation-triangle",
+			COLOR_DANGER:"ff0000"
+		},
+		dialogBox:function(e){//text , icon, color
+			alert("NEWUI"+e.text);
+			
+		}
+	},
 	init:function(){
 	
 
-	if(document.getElementsByClassName("user_permission").length>0){
-	admin.permission = parseInt(document.getElementsByClassName("user_permission")[0].innerHTML);
-	}
-	if(document.getElementsByClassName("menu_active").length>0){
-		document.getElementsByClassName("menu_active")[0].onclick=function(){
-			admin.menu.open();
+		if(document.getElementsByClassName("user_permission").length>0){
+			admin.permission = parseInt(document.getElementsByClassName("user_permission")[0].innerHTML);
 		}
-		if(location.href.split("/").length>4 && location.href.split("/").length<7 && location.href.split("/")[4]!=""){
-			switch (location.href.split("/")[4]){
-				case "users":	
-					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[1]});
-				break;
-				case "products":
-					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[2]});
-				break;
-				case "settings":
-					admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[3]});
-				break;
+		if(document.getElementsByClassName("menu_active").length>0){
+			document.getElementsByClassName("menu_active")[0].onclick=function(){
+				admin.menu.open();
 			}
-		}else{
-			admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[0]});
+			if(location.href.split("/").length>4 && location.href.split("/").length<7 && location.href.split("/")[4]!=""){
+				switch (location.href.split("/")[4]){
+					case "users":	
+						admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[1]});
+					break;
+					case "products":
+						admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[2]});
+					break;
+					case "settings":
+						admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[3]});
+					break;
+				}
+			}else{
+				admin.menu.close({target:document.getElementsByClassName("menu_list")[0].children[0]});
+			}
 		}
-	}
 
 		if(document.getElementsByClassName("signInBtn").length>0){
 			document.getElementsByClassName("signInBtn")[0].onclick=function(){
@@ -39,19 +49,136 @@ var admin = {
 		}
 	},
 	products:{
+		removeProduct:function(pid){
+			var newBox = document.createElement("div");
+			newBox.className="dialog_box";
+			newBox.innerHTML="Вы точно хотите удалить продукт? <a class='btn' href='javascript://'>Удалить</a>";
+			document.getElementsByClassName("admin_content")[0].appendChild(newBox);
+				var closeWin = function(e){
+					if(e.target.parentNode.className=="dialog_box"){
+						admin.ajaxSend("/api/removeProduct/?id="+pid, function(e){
+							if(e.target.response.success==1){
+								document.getElementsByClassName("product-"+pid)[0].parentNode.removeChild(document.getElementsByClassName("product-"+pid)[0])
+							}else{
+								admin.ui.dialogBox({
+									text:"Ошибка. "+e.target.response.error,
+									icon:admin.ui.consts.DANGER_ICON,
+									color:admin.ui.consts.DANGER_COLOR									
+								});
+							}
+						});
+					}
+					document.removeEventListener("click", closeWin , false);
+					newBox.parentNode.removeChild(newBox);
+				}
+				setTimeout(function(){
+					document.addEventListener("click",  closeWin, false);
+				},500);
+		},
 		showProductsList:function(){
 			admin.ajaxSend("/api/showProductsList/",function(e){
 				if(e.target.response.success==1){
-					productsList="<a onclick=\"admin.users.newProduct()\" class=\"btn\" href=\"javascript://\">Add Product</a>";
+					productsList="<a onclick=\"admin.products.newProduct()\" class=\"btn\" href=\"javascript://\">Add Product</a>";
 					productsList+="<table class='pages_list'>\n<tr>\n\t<th>Id</th>\n\t<th>Name</th>\n\t<th>Price</th>\n\t<th>Image</th>\n\t<th>Edit</th>\n\t<th>Remove</th>\n</tr>\n";
 					for(var i=0;i<e.target.response.products.length;i++){
-						productsList+="<tr class=\"product-"+e.target.response.products[i].id+"\">\n\t<td>"+e.target.response.products[i].id+"</td>\n\t<td>"+e.target.response.products[i].product_name+"</td>\n\t<td>"+e.target.response.products[i].price+"</td>\n\t<td>"+e.target.response.products[i].image+"</td>\n\t<td><a class=\"btn\" onclick=\"admin.users.editProduct("+e.target.response.products[i].id+")\" href=\"javascript://\">Edit</a></td>\n\t<td><a onclick=\"admin.users.removeProduct("+e.target.response.products[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>";
+						productsList+="<tr class=\"product-"+e.target.response.products[i].id+"\">\n\t<td>"+e.target.response.products[i].id+"</td>\n\t<td>"+e.target.response.products[i].product_name+"</td>\n\t<td>"+e.target.response.products[i].price+"</td>\n\t<td>"+e.target.response.products[i].image+"</td>\n\t<td><a class=\"btn\" onclick=\"admin.products.editProduct("+e.target.response.products[i].id+")\" href=\"javascript://\">Edit</a></td>\n\t<td><a onclick=\"admin.products.removeProduct("+e.target.response.products[i].id+")\" class=\"btn\" href=\"javascript://\">Remove</a></td>\n</tr>";
 					}
 
 					productsList+="</table>";
 					document.getElementsByClassName("admin_content")[0].innerHTML=productsList;
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
+				}
+			});
+		},
+		newProduct:function(){
+			admin.products.renderProductsEditor({
+				product_name:"",
+				product_price:"",
+				product_old_price:"",
+				product_quantity:"",
+				product_image:"",
+				product_description:"",
+				product_id:-1
+			});
+		},
+		editProduct:function(pid){
+			admin.ajaxSend("/api/GetProductById/?id="+pid,function(e){
+				if(e.target.response.success==1){
+					admin.products.renderProductsEditor({
+						product_name:e.target.response.product.product_name,
+						product_price:e.target.response.product.product_price,
+						product_old_price:e.target.response.product.product_old_price,
+						product_quantity:e.target.response.product.product_quantity,
+						product_image:e.target.response.product.product_image,
+						product_description:e.target.response.product.product_description,
+						product_id:e.target.response.product.product_id
+					});
+				}else{
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
+				}
+			});
+		},
+		renderProductsEditor:function(e){
+			productProps = '<a onclick=\"admin.products.showProductsList()\" class=\"btn\" href=\"javascript://\">Back</a>';
+			if(e.product_id!=-1){
+				productProps += '<a onclick=\"admin.products.saveProduct('+e.product_id+')\" class=\"btn\" href=\"javascript://\">Save</a>';
+			}else{
+				productProps += '<a onclick=\"admin.products.addProduct()\" class=\"btn\" href=\"javascript://\">Add</a>';
+			}
+			productProps += '<div class="product_field"><div class="prop_title">Name</div><input class="name_field" value="'+e.product_name+'"></div>';
+			productProps += '<div class="product_field"><div class="prop_title">Price</div><input class="price_field" value="'+e.product_price+'"></div>';
+			productProps += '<div class="product_field"><div class="prop_title">Old Price</div><input class="old_price_field" value="'+e.product_old_price+'"></div>';
+			productProps += '<div class="product_field"><div class="prop_title">Quantity</div><input class="quantity_field" value="'+e.product_quantity+'"></div>';
+			productProps += '<div class="product_field"><div class="prop_title">Cover</div><input class="image_field" value="'+e.product_image+'"></div>';
+			productProps += '<div class="product_field"><div class="prop_title">Description</div><textarea class="description_field">'+e.product_description+'</textarea></div>';
+					document.getElementsByClassName("admin_content")[0].innerHTML=productProps;
+		},
+		saveProduct:function(pid){
+			name=document.getElementsByClassName("name_field")[0].value;
+			price=document.getElementsByClassName("price_field")[0].value;
+			old_price=document.getElementsByClassName("old_price_field")[0].value;
+			quantity=document.getElementsByClassName("quantity_field")[0].value;
+			image=document.getElementsByClassName("image_field")[0].value;
+			description=document.getElementsByClassName("description_field")[0].value;
+
+			admin.ajaxSend("/api/saveProduct/?id="+pid+"&name="+name+"&price="+price+"&old_price="+old_price+"&quantity="+quantity+"&image="+image+"&description="+description,function(e){
+				if(e.target.response.success==1){
+					alert("Сохранено");
+				}else{
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
+				}
+			});
+		},
+		addProduct:function(){
+			name=document.getElementsByClassName("name_field")[0].value;
+			price=document.getElementsByClassName("price_field")[0].value;
+			old_price=document.getElementsByClassName("old_price_field")[0].value;
+			quantity=document.getElementsByClassName("quantity_field")[0].value;
+			image=document.getElementsByClassName("image_field")[0].value;
+			description=document.getElementsByClassName("description_field")[0].value;
+
+			admin.ajaxSend("/api/addProduct/?name="+name+"&price="+price+"&old_price="+old_price+"&quantity="+quantity+"&image="+image+"&description="+description,function(e){
+				if(e.target.response.success==1){
+					alert("Сохранено");
+				}else{
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		}
@@ -75,7 +202,11 @@ var admin = {
 					alert("Пользователь сохранён.");
 					admin.users.showUsersList();
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 
@@ -90,7 +221,11 @@ var admin = {
 					alert("Пользователь добавлен.");
 					admin.users.showUsersList();
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		},
@@ -99,7 +234,11 @@ var admin = {
 				if(e.target.response.success==1){
 					alert("Пользователь вышел.");
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 			//log out user with specific id
@@ -148,7 +287,11 @@ var admin = {
 						user_id: e.target.response.user.id
 					});
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		},
@@ -174,7 +317,11 @@ var admin = {
 						if(e.target.response.success==1){
 							document.getElementsByClassName("user-"+uid)[0].parentNode.removeChild(document.getElementsByClassName("user-"+uid)[0])
 						}else{
-							alert("Ошибка. "+e.target.response.error);
+							admin.ui.dialogBox({
+								text:"Ошибка. "+e.target.response.error,
+								icon:admin.ui.consts.DANGER_ICON,
+								color:admin.ui.consts.DANGER_COLOR									
+							});
 						}
 					});
 				}
@@ -200,7 +347,11 @@ var admin = {
 					document.getElementsByClassName("admin_content")[0].innerHTML=usersList;
 					//console.log(e.target.response.users[0].login);
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		}
@@ -218,7 +369,11 @@ var admin = {
 					if(e.target.response.success==1){
 						alert("Порядок сохранён.");
 					}else{
-						alert("Ошибка. "+e.target.response.error);
+						admin.ui.dialogBox({
+							text:"Ошибка. "+e.target.response.error,
+							icon:admin.ui.consts.DANGER_ICON,
+							color:admin.ui.consts.DANGER_COLOR									
+						});
 					}
 				});
 				
@@ -270,7 +425,11 @@ var admin = {
 				if(e.target.response.success==1){
 					alert("Сохранено");
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		},
@@ -284,7 +443,11 @@ var admin = {
 				if(e.target.response.success==1){
 					alert("Сохранено");
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		},
@@ -301,7 +464,11 @@ var admin = {
 						page_id:e.target.response.page.id
 					});
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		},
@@ -317,7 +484,11 @@ var admin = {
 						if(e.target.response.success==1){
 							document.getElementsByClassName("page-"+pageId)[0].parentNode.removeChild(document.getElementsByClassName("page-"+pageId)[0])
 						}else{
-							alert("Ошибка. "+e.target.response.error);
+							admin.ui.dialogBox({
+								text:"Ошибка. "+e.target.response.error,
+								icon:admin.ui.consts.DANGER_ICON,
+								color:admin.ui.consts.DANGER_COLOR									
+							});
 						}
 					});
 				}
@@ -380,7 +551,11 @@ var admin = {
 						document.addEventListener('mousedown', dragstart);
 					}
 				}else{
-					alert("Ошибка. "+e.target.response.error);
+					admin.ui.dialogBox({
+						text:"Ошибка. "+e.target.response.error,
+						icon:admin.ui.consts.DANGER_ICON,
+						color:admin.ui.consts.DANGER_COLOR									
+					});
 				}
 			});
 		}
@@ -425,7 +600,11 @@ var admin = {
 				alert("Вы успешно вышли");
 				location.reload();
 			}else{
-				alert("Ошибка. "+e.target.response.error);
+				admin.ui.dialogBox({
+					text:"Ошибка. "+e.target.response.error,
+					icon:admin.ui.consts.DANGER_ICON,
+					color:admin.ui.consts.DANGER_COLOR									
+				});
 			}
 		});
 	},
@@ -439,7 +618,11 @@ var admin = {
 					location.reload();
 				},500)
 			}else{
-				alert("Ошибка. "+e.target.response.error);
+				admin.ui.dialogBox({
+					text:"Ошибка. "+e.target.response.error,
+					icon:admin.ui.consts.DANGER_ICON,
+					color:admin.ui.consts.DANGER_COLOR									
+				});
 			}
 		});
 	},

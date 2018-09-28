@@ -1,10 +1,9 @@
 Cart
 Admin Panel
+	Auth
+		Graphical help for password with hash.
 	Products list
-	 Pages of product list and offsets
-		Add
-		Edit
-		Remove
+	 	Pages of product list and offsets
 	Constants list
 		Add
 		DB model

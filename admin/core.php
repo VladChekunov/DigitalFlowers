@@ -15,7 +15,7 @@ class API{
 				'error'  => "Не указан логин или пароль.",
 			);
 		}
-		if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){//TODO
+		if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){
 			return array(
 				'success'  => 0,
 				'error'  => "Логин не валиден.",
@@ -148,6 +148,7 @@ class API{
 			);
 		}
 		//Тут должны быть проверки на валидность
+		//TODO
 		/*url*/
 		/*title*/
 		/*source*/
@@ -191,8 +192,6 @@ class API{
 		return array(
 			'success'  => 1,
 		);
-
-		//Удаляем поле по id.
 	}
 	function addPage(){
 		global $api;
@@ -215,6 +214,7 @@ class API{
 			);
 		}
 		//Тут должны быть проверки на валидность
+		//TODO
 		/*url*/
 		/*title*/
 		/*source*/
@@ -436,7 +436,7 @@ class API{
 				'error'  => "Нельзя создать пользователя рангом выше себя.",
 			);
 		}
-		if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){//TODO
+		if(!preg_match('/^[A-Za-z][A-Za-z0-9]{4,31}$/', $_GET["login"])){
 			return array(
 				'success'  => 0,
 				'error'  => "Логин не валиден.",
@@ -484,7 +484,6 @@ class API{
 			);
 		}
 
-		//TODO Check user group and your group
 		$query = mysqli_query($api->mysqlConnect, "SELECT `group` FROM `users` WHERE `id`='".$_GET['id']."' LIMIT 1");
 		$data = mysqli_fetch_assoc($query);
 		if($data["group"]>$api->userGroup){
@@ -569,8 +568,8 @@ class API{
 
 	}
 	function removeProduct(){
-	 global $api;
-	 if($api->userPermission==0){
+		global $api;
+		if($api->userPermission==0){
 			return array(
 				'success'  => 0,
 				'error'  => "Ошибка доступа.",
@@ -588,15 +587,15 @@ class API{
 				'error'  => "Идентификатор не валиден.",
 			);
 		}
-		mysqli_query($api->mysqlConnect, "DELETE FROM `products` WHERE `id`='".$_GET["id"]."';");
+		mysqli_query($api->mysqlConnect, "DELETE FROM `products` WHERE `product_id`='".$_GET["id"]."';");
 		
-	 return array(
-	  'success' => 1
-	 );
+		return array(
+			'success' => 1,
+		);
 	}
 	function GetProductById(){
-	 global $api;
-	 if($api->userPermission==0){
+		global $api;
+		if($api->userPermission==0){
 			return array(
 				'success'  => 0,
 				'error'  => "Ошибка доступа.",
@@ -605,43 +604,73 @@ class API{
 		
 		$query = mysqli_query($api->mysqlConnect, "SELECT * FROM `products` WHERE `product_id`='".$_GET['id']."';");
 		$row = mysqli_fetch_assoc($query);
-		
+
+		$product = array(
+			'product_id' => $row['product_id'],
+			'product_name' => $row['name'],
+			'product_price' => $row['price'],
+			'product_old_price' => $row['old_price'],
+			'product_quantity' => $row['quantity'],
+			'product_image' => $row['image'],
+			'product_description' => $row['description'],
+		);
+
 		return array(
-		 'success' => 1,
-		 'id' => $row['product_id'],
-		 'price' => $row['price'],
-		 'old_price' => $row['old_price'],
-		 'quantity' => $row['quantity'],
-		 'image' => $row['image'],
-		 'description' => $row['description'],
+			'success' => 1,
+			'product' => $product,
 		);
 	}
 	function addProduct(){
-	 global $api;
-	 if($api->userPermission==0){
+	 	global $api;
+	 	if($api->userPermission==0){
 			return array(
 				'success'  => 0,
 				'error'  => "Ошибка доступа.",
 			);
 		}
-		
+		//check $_GET fields TODO
+		//name
+		//price
+		//old_price
+		//quantity
+		//image
+		//description
+
+		mysqli_query($api->mysqlConnect, "INSERT INTO `products` (`name`, `price`, `old_price`, `quantity`, `image`, `description`) VALUES ('".$_GET["name"]."', '".$_GET["price"]."', '".$_GET["old_price"]."', '".$_GET["quantity"]."', '".$_GET["image"]."', '".$_GET["description"]."');");
+
+
 		return array(
-	  'success' => 1
-	 );
+	 		'success' => 1
+		);
 	}
 	function saveProduct(){
-	 global $api;
-	 if($api->userPermission==0){
+		global $api;
+		if($api->userPermission==0){
+				return array(
+					'success'  => 0,
+					'error'  => "Ошибка доступа.",
+				);
+		}
+		if(!isset($_GET["id"]) || !isset($_GET["name"]) || !isset($_GET["price"]) || !isset($_GET["quantity"]) || !isset($_GET["image"])){
 			return array(
 				'success'  => 0,
-				'error'  => "Ошибка доступа.",
+				'error'  => "Не введён один из обязательных параметров.",
 			);
 		}
-		
-		
+		if(!preg_match('/^[0-9]{1,32}$/', $_GET["id"])){
+			return array(
+				'success'  => 0,
+				'error'  => "Идентификатор не валиден.",
+			);
+		}
+		//Тут должны быть проверки на валидность
+
+		mysqli_query($api->mysqlConnect, "UPDATE `products` SET `name`='".$_GET["name"]."', `price`='".$_GET["price"]."', `old_price`='".$_GET["old_price"]."', `quantity`='".$_GET["quantity"]."', `image`='".$_GET["image"]."', `description`='".$_GET["description"]."' WHERE `product_id`='".$_GET["id"]."';");
+			
+			
 		return array(
-	  'success' => 1
-	 );
+			'success' => 1
+		);
 	}
 }
 
@@ -655,7 +684,7 @@ class CMSCore{
 	var $userPermission;//0 - nobody 1 - admin
 	var $userLogin;
 	var $userId;
-	var $userGroup;
+	var $userGroup;// 0 - Editor / 1 - Moderator / 2 - Admin
 
 	var $API;
  function checkElement($el){
