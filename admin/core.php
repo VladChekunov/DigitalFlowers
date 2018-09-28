@@ -151,7 +151,15 @@ class API{
 		/*url*/
 		/*title*/
 		/*source*/
-		$content = $_GET["source"];
+		
+		$content = "";//$_GET["source"];
+		$elements = json_decode($_GET["source"], true);
+		for($i=0;$i<sizeof($elements["els"]);$i++){
+		 //check every elements and check them childs;
+		 $content .= $api->checkElement($element["els"][$i]);
+		 
+		}
+		$elements["els"][0]
 		mysqli_query($api->mysqlConnect, "UPDATE `pages` SET `url`='".$_GET["url"]."', `title`='".$_GET["title"]."', `source`='".$_GET["source"]."', `content`='".$content."', `status`='".$_GET["status"]."' WHERE `id`='".$_GET["id"]."';");
 
 		return array(
@@ -650,7 +658,28 @@ class CMSCore{
 	var $userGroup;
 
 	var $API;
-
+ function checkElement($el){
+  $content="";
+  $preel="";//before content
+  $postel="";//after content
+  switch($el["type"]){
+   case "map":
+   
+   $mapsrc = ' src="'.$el["values"][array_search('mapsrc', $el["params"])].'"';
+   
+   $preel .="начало карты (".$mapsrc.")";
+   $postel .="конец карты";
+   break;
+  }
+  for($i=0;$i<len($el["childrens"]);$i++){
+ $content .= $api->checkElement($el["childrens"][$i]);
+ 
+  }
+  //$content.="дочерний контент";
+  
+  return $preel.$content.$postel;
+  
+ }
 	function generateCode($length=6) {
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
 		$code = "";
