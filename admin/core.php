@@ -720,6 +720,26 @@ class CMSCore{
 				$preel .='<h2>'.$api->getParam("content", $el);
 				$postel .='</h2>';
 			break;
+			case "text":
+				$preel .='<div class="text_container">';
+				$postel .='</div>';
+			break;
+			case "jumbotron":
+				$preel .='<div class="jumbotron">
+		<div class="jt_bg">
+			<img src="'.$api->getParam("content", $el).'">
+		</div>
+		<div class="jt_fg">
+			<div class="content">';
+				$postel .='			</div>
+		</div>
+	</div>';
+			break;
+			case "html":
+				$preel .=''.$api->getParam("content", $el);
+
+				$postel .='';
+			break;
 		}
 		for($i=0;$i<count($el["childrens"]);$i++){
 			$content .= $api->checkElement($el["childrens"][$i]);
