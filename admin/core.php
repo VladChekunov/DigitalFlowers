@@ -155,16 +155,16 @@ class API{
 		
 		$content = "";//$_GET["source"];
 		$elements = json_decode($_GET["source"], true);
-		for($i=0;$i<sizeof($elements["els"]);$i++){
-		 //check every elements and check them childs;
-		 $content .= $api->checkElement($element["els"][$i]);
-		 
-		}
-		$elements["els"][0]
-		mysqli_query($api->mysqlConnect, "UPDATE `pages` SET `url`='".$_GET["url"]."', `title`='".$_GET["title"]."', `source`='".$_GET["source"]."', `content`='".$content."', `status`='".$_GET["status"]."' WHERE `id`='".$_GET["id"]."';");
 
+		for($i=0;$i<count($elements["els"]);$i++){
+			//$content .=$elements["els"][$i]["type"];
+			$content .= $api->checkElement($elements["els"][$i]);
+		}
+		$sqlquery = "UPDATE `pages` SET `url`='".$_GET["url"]."', `title`='".$_GET["title"]."', `source`='".$_GET["source"]."', `content`='".urlencode($content)."', `status`='".$_GET["status"]."' WHERE `id`='".$_GET["id"]."';";
+		mysqli_query($api->mysqlConnect, $sqlquery);
 		return array(
 			'success'  => 1,
+			'content' => $sqlquery,
 		);
 	}
 	function removePage(){
@@ -687,28 +687,55 @@ class CMSCore{
 	var $userGroup;// 0 - Editor / 1 - Moderator / 2 - Admin
 
 	var $API;
- function checkElement($el){
-  $content="";
-  $preel="";//before content
-  $postel="";//after content
-  switch($el["type"]){
-   case "map":
-   
-   $mapsrc = ' src="'.$el["values"][array_search('mapsrc', $el["params"])].'"';
-   
-   $preel .="начало карты (".$mapsrc.")";
-   $postel .="конец карты";
-   break;
-  }
-  for($i=0;$i<len($el["childrens"]);$i++){
- $content .= $api->checkElement($el["childrens"][$i]);
- 
-  }
-  //$content.="дочерний контент";
-  
-  return $preel.$content.$postel;
-  
- }
+	function getParam($param, $el){
+		return $el["values"][array_search($param, $el["params"])];
+	}
+	function checkElement($el){
+		global $api;
+		$content="";
+		$preel="";//before content
+		$postel="";//after content
+		switch($el["type"]){
+			case "map":
+				$mapsrc = ' src="'.$api->getParam("mapsrc", $el).'"';
+				$preel .="<div class='map'>\n<script src='".$mapsrc."'></script>\n";
+				$postel .="\n</div>\n";
+			break;
+			case "cols":
+				$preel .='<div class="cols_container">';
+				$postel .='</div>';
+			break;
+			case "col":
+				$preel .='<div class="col-'.$api->getParam("size", $el).'">';
+				$postel .='</div>';
+			break;
+			case "image_card":
+				$preel .='<div class="image_card">
+				<i class="'.$api->getParam("icon", $el).'"></i>
+				<b>'.$api->getParam("header", $el).'</b>
+				<p>'.$api->getParam("description", $el).'</p>';
+				$postel .='</div>';
+			break;
+			case "title":
+				$preel .='<h2>'.$api->getParam("content", $el);
+				$postel .='</h2>';
+			break;
+		}
+		for($i=0;$i<count($el["childrens"]);$i++){
+			$content .= $api->checkElement($el["childrens"][$i]);
+		}
+		return $preel.$content.$postel;
+/*
+	{
+	  "els": [{
+	    "type": "map",
+	    "childrens": [],
+	    "params": ["mapsrc"],
+	    "values": ["world"]
+	  }]
+	}
+*/
+	}
 	function generateCode($length=6) {
 		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
 		$code = "";
@@ -728,7 +755,7 @@ class CMSCore{
 		$pagedata = mysqli_fetch_assoc($query);
 
 		include "../template/header.php";
-		echo $pagedata["content"];
+		echo urldecode($pagedata["content"]);
 		include "../template/footer.php";
 		return 1;
 	}
