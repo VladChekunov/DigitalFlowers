@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=700, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="./css/style.css" type="text/css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	<title>Digital Flowers</title>
 	<link rel="shortcut icon" href="favicon.ico" />
+	<script>
+	var resizeJumbotrons = function(){
+		var image = document.getElementsByClassName("jt_bg")[0].children[0];
+		console.log(image.width);
+		if(1/(window.innerHeight/window.innerWidth)<(image.width/image.height)){
+			image.width="";
+			image.height="100%";
+		}else{
+			image.width="100%";
+			image.height="";
+		}
+	}
+
+	window.onload=function(){
+		window.addEventListener("resize", resizeJumbotrons);
+		resizeJumbotrons();
+	}
+	</script>
 </head>
 <body>
 <header>
