@@ -316,6 +316,9 @@ footer{
 	}
 }
 @media (max-width:740px){
+	.col-3{
+		width:100%;
+	}
 	footer{
 		padding-left: 4px;
 		padding-right: 4px;
