@@ -13,9 +13,15 @@
 			<img src="/img/logo-xs.png">
 		</div>
 		<nav>
+			<?php
+				global $api;
+				$api->getMenu();
+			?>
+			<!--
 			<a href="/">HOME</a>
 			<a href="/about/">ABOUT US</a>
 			<a href="/contact/">CONTACT US</a>
+			-->
 		</nav>
 		<div class="phone">
 			<div class="phone_left">
