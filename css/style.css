@@ -120,9 +120,9 @@ nav a{
 	right:0;
 	top:0;
 	bottom:0;
-	height:200px;
+	height:200px !important;
 	height:-moz-fit-content;
-	width: fit-content;
+	width: fit-content !important;
 	height: fit-content;
 	color:#fff;
 	font-size:20px;
