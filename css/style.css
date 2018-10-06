@@ -337,10 +337,22 @@ footer{
 		margin: 0 auto;
 		height: 60px;
 	}
+	nav a{
+		clear: both;
+		float: none;
+		display: block;
+	}
+	.jt_fg .content{
+		padding-left:20px;
+		padding-right:20px;
+		max-width: 100%;
+	}
 	header .phone{
 		display:block;
 		float:none;
 		clear:both;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	header nav{
 		display:block;
