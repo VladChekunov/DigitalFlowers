@@ -162,6 +162,7 @@ class API{
 		}
 		$sqlquery = "UPDATE `pages` SET `url`='".$_GET["url"]."', `title`='".$_GET["title"]."', `source`='".$_GET["source"]."', `content`='".urlencode($content)."', `status`='".$_GET["status"]."' WHERE `id`='".$_GET["id"]."';";
 		mysqli_query($api->mysqlConnect, $sqlquery);
+		//todo write to constants menu
 		return array(
 			'success'  => 1,
 			'content' => $sqlquery,
@@ -841,6 +842,15 @@ class CMSCore{
 			die('FUUUUUU: ' . mysql_error());
 
 		}
+	}
+	function getMenu(){
+		$query = mysqli_query($api->mysqlConnect, "SELECT ``url`, `title` FROM `pages` ORDER BY `order` WHERE `order`='1';");
+
+		$result = "";
+		while($row = mysqli_fetch_assoc($query)){
+			$result.='<a href="'.$row["url"].'">'.$row["title"].'</a>'."\n";
+		}
+		return $result;
 	}
 	function checkUser(){
 		if (isset($_COOKIE["key"])){
