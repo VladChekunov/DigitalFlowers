@@ -322,6 +322,9 @@ footer{
 	.col-3{
 		width:100%;
 	}
+	.col-4{
+		width:100%;
+	}
 	footer{
 		padding-left: 4px;
 		padding-right: 4px;
