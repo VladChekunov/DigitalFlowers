@@ -324,9 +324,10 @@ footer{
 		width:100%;
 	}
 	header{
+		height: auto;
+		padding-bottom: 30px;
 		padding-left:10px;
 		padding-right:10px;
-		height: 440px;
 	}
 	header .logo{
 		text-align:center;
