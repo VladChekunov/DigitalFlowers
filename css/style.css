@@ -316,6 +316,9 @@ footer{
 	}
 }
 @media (max-width:740px){
+	.jt_fg .content img, .jt_fg .content p{
+		max-width:100%;
+	}
 	.col-3{
 		width:100%;
 	}
