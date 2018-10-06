@@ -11,11 +11,11 @@
 			var image = document.getElementsByClassName("jt_bg")[0].children[0];
 			console.log(image.width)
 			if(1/(window.innerHeight/window.innerWidth)<(image.width/image.height)){
-				image.width="auto";
+				image.removeAttribute("width");
 				image.height="100%";
 			}else{
 				image.width="100%";
-				image.height="auto";
+				image.removeAttribute("height");
 			}
 		}
 
