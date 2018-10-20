@@ -98,6 +98,9 @@ nav a{
 	background:#0000ff;
 	position:relative;
 }
+.jt_bg{
+	height:100%;
+}
 .jt_bg img{
 	width:100%;
 }
@@ -315,7 +318,30 @@ footer{
 		margin-top: 98px;
 	}
 }
+	.mobmenu{
+		display:none;
+	}
 @media (max-width:740px){
+	.text_container{
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.cols_container .image_card{
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.mobmenu{
+		display: block;
+		width: 40px;
+		height: 40px;
+		background: #fff;
+		border:solid 3px #000;
+		
+	}
+	.mobmenu i{
+		color: #000;
+		padding: 12px;
+	}
 	.jt_fg .content img, .jt_fg .content p{
 		max-width:100%;
 	}
@@ -365,12 +391,14 @@ footer{
 		margin-right: auto;
 	}
 	header nav{
+		height: 0px;
 		display:block;
 		float:none;
 		clear:both;
 		position:relative;
 		text-align:left;
 		margin-top:10px;
+		overflow-y:auto;
 	}
 	nav{
 		margin-top: 98px;
