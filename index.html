@@ -7,21 +7,32 @@
 	<title>Digital Flowers</title>
 	<link rel="shortcut icon" href="favicon.ico" />
 	<script>
+	//TODO for all jumbs
+		var jimage;
 		var resizeJumbotrons = function(){
-			var image = document.getElementsByClassName("jt_bg")[0].children[0];
-			console.log(image.width)
-			if(1/(window.innerHeight/window.innerWidth)<(image.width/image.height)){
-				image.removeAttribute("width");
-				image.height="100%";
-			}else{
-				image.width="100%";
-				image.removeAttribute("height");
+			for(var i = 0;i<document.getElementsByClassName("jt_bg").length;i++){
+				jimage = document.getElementsByClassName("jt_bg")[i].children[0];
+				console.log(jimage)
+				if(1/(window.innerHeight/window.innerWidth)<(jimage.width/jimage.height)){
+					jimage.style.height="110%";
+					jimage.style.width="auto";
+				}else{
+					jimage.width="110%";
+					jimage.style.height="auto";
+				}
 			}
 		}
 
 		window.onload=function(){
 			window.addEventListener("resize", resizeJumbotrons);
 			resizeJumbotrons();
+		}
+		function toggleMenu(){
+			if(document.querySelector("nav").style.height=="auto"){
+				document.querySelector("nav").style.height="0px";
+			}else{
+				document.querySelector("nav").style.height="auto";
+			}
 		}
 
 	</script>
@@ -32,6 +43,9 @@
 		<div class="logo">
 			<img src="./img/logo-xs.png">
 		</div>
+		<a class="mobmenu" onclick="toggleMenu()" href="javascript://">
+			<i class="fas fa-bars"></i>
+		</a>
 		<nav>
 			<a href="./index.html">HOME</a>
 			<a href="./about">ABOUT US</a>
