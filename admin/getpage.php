@@ -3,7 +3,7 @@ include "core.php";
 /*
 Render specific page with footer header etc
 */
-	$api = new CMSCore("localhost","id7881245_dflowersuser","dflowers","id7881245_dflowers");
+	$api = new CMSCore("localhost","root","toor","dflowers");
 
 	$uri=preg_replace('#[a-z0-9]+\.[a-z0-9]+$#i', '', $_SERVER['REQUEST_URI']);
 	$get_reqs=explode('/', $uri, 20);

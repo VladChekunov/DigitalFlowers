@@ -846,7 +846,8 @@ class CMSCore{
 		}
 	}
 	function getMenu(){
-		$query = mysqli_query($api->mysqlConnect, "SELECT ``url`, `title` FROM `pages` ORDER BY `order` WHERE `order`='1';");
+		global $api;
+		$query = mysqli_query($api->mysqlConnect, "SELECT `url`, `title` FROM `pages` WHERE `order`='1' ORDER BY `order`;");
 
 		$result = "";
 		while($row = mysqli_fetch_assoc($query)){

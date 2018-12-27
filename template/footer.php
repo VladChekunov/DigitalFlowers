@@ -8,7 +8,7 @@
 		<div class="col-3 footer_menu">
 			<?php
 				global $api;
-				$api->getMenu();
+				echo $api->getMenu();
 			?>
 			<!--
 			<a href="/">HOME</a>

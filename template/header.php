@@ -15,7 +15,7 @@
 		<nav>
 			<?php
 				global $api;
-				$api->getMenu();
+				echo $api->getMenu();
 			?>
 			<!--
 			<a href="/">HOME</a>
