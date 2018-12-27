@@ -1,5 +1,7 @@
 <?php
 
+//ini_set('display_errors', 'On');
+
 class API{
 	function Auth(){
 		global $api;
@@ -54,7 +56,7 @@ class API{
 			'success'  => 1,
 		);
 	}
-	function Exit(){
+	function DFExit(){
 		global $api;
 		if($api->userPermission==0){
 			return array(

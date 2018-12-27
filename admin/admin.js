@@ -48,6 +48,11 @@ var admin = {
 			}
 		}
 	},
+	editor:{
+		init:function(){
+
+		}
+	},
 	products:{
 		removeProduct:function(pid){
 			var newBox = document.createElement("div");

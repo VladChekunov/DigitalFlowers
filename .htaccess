@@ -1,3 +1,4 @@
+php_flag display_errors 1
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^.*$ admin/getpage.php
