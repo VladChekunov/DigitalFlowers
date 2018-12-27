@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="./css/style.css" type="text/css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	<title>Digital Flowers</title>
 	<link rel="shortcut icon" href="favicon.ico" />
+	<script>
+	//TODO for all jumbs
+		var jimage;
+		var resizeJumbotrons = function(){
+			for(var i = 0;i<document.getElementsByClassName("jt_bg").length;i++){
+				jimage = document.getElementsByClassName("jt_bg")[i].children[0];
+				console.log(jimage)
+				if(1/(window.innerHeight/window.innerWidth)<(jimage.width/jimage.height)){
+					jimage.style.height="110%";
+					jimage.style.width="auto";
+				}else{
+					jimage.style.width="110%";
+					jimage.style.height="auto";
+				}
+			}
+		}
+
+		window.onload=function(){
+			window.addEventListener("resize", resizeJumbotrons);
+			resizeJumbotrons();
+		}
+		function toggleMenu(){
+			if(document.querySelector("nav").style.height=="auto"){
+				document.querySelector("nav").style.height="0px";
+			}else{
+				document.querySelector("nav").style.height="auto";
+			}
+		}
+
+	</script>
 </head>
 <body>
 <header>
@@ -12,6 +43,9 @@
 		<div class="logo">
 			<img src="./img/logo-xs.png">
 		</div>
+		<a class="mobmenu" onclick="toggleMenu()" href="javascript://">
+			<i class="fas fa-bars"></i>
+		</a>
 		<nav>
 			<a href="./index.html">HOME</a>
 			<a href="./about">ABOUT US</a>

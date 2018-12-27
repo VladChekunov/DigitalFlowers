@@ -6,9 +6,15 @@
 			<p>DigitalFlowers - компания, занимающаяся выращиванием и продажей цифровых цветов.</p>
 		</div>
 		<div class="col-3 footer_menu">
+			<?php
+				global $api;
+				$api->getMenu();
+			?>
+			<!--
 			<a href="/">HOME</a>
 			<a href="/about">ABOUT US</a>
 			<a href="/contact">CONTACT US</a>
+			-->
 		</div>
 		<div class="col-3 footer_phone">
 			(123) 456 78 90
