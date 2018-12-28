@@ -172,3 +172,36 @@ header{
 .drag .fas{
 	pointer-events: none;
 }
+.ui_editor{
+	display: block;
+	position: relative;
+}
+
+.ui_block{
+	display:block;
+	padding:8px;
+	background:#fff;
+	width:100%;
+	box-sizing: border-box;
+	border:solid #000 1px;
+}
+.ui_block .childs{
+
+}
+.ui_block .header{
+	display: inline-block;
+}
+.childs_controller{
+	display:block;
+	float:right;
+}
+#add_block{
+	display:block;
+	width:100%;
+	text-align:center;
+	padding:10px;
+	color:#fff;
+	background:#000;
+	box-sizing: border-box;
+	text-decoration:none;
+}

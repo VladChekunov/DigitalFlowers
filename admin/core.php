@@ -701,7 +701,7 @@ class CMSCore{
 		switch($el["type"]){
 			case "map":
 				$mapsrc = ' src="'.$api->getParam("mapsrc", $el).'"';
-				$preel .="<div class='map'>\n<script src='".$mapsrc."'></script>\n";
+				$preel .="\n<div class='map'>\nКарта <script src='".$mapsrc."'></script>\n";
 				$postel .="\n</div>\n";
 			break;
 			case "cols":
@@ -847,7 +847,7 @@ class CMSCore{
 	}
 	function getMenu(){
 		global $api;
-		$query = mysqli_query($api->mysqlConnect, "SELECT `url`, `title` FROM `pages` WHERE `order`='1' ORDER BY `order`;");
+		$query = mysqli_query($api->mysqlConnect, "SELECT `url`, `title` FROM `pages` WHERE `status`='1' ORDER BY `order`;");
 
 		$result = "";
 		while($row = mysqli_fetch_assoc($query)){

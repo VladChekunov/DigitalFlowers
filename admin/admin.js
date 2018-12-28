@@ -383,7 +383,61 @@ var admin = {
 				});
 				
 		},
+		UI_data:null,
+		UI_lastId:0,
+		UI_Parse:function(els, parentId){
+			els.forEach(function(el){
+				admin.pages.UI_Parse_Element(el, parentId);
+			});
+		},
+		UI_collapse:function(ele){
+			//alert(7);
+			if(ele.getElementsByClassName("childs")[0].style.display=="none"){
+				ele.getElementsByClassName("childs")[0].style.display="block";
+			}else{
+				ele.getElementsByClassName("childs")[0].style.display="none";
+			}
+		},
+		UI_add_block:function(){
+			admin.pages.UI_lastId++;
+			var newBlock = {
+				type: "none",
+				childrens: [],
+				params: [],
+				values: []
+			}
+			document.getElementById("ui_editor").appendChild(admin.pages.UI_Make_Block(newBlock,admin.pages.UI_lastId));
+		},
+		UI_Make_Block:function(el,ident){
+			//console.log(el);
+			//TODO childrens
+			var newBlock = document.createElement("div");
+			newBlock.innerHTML = '<div class="header">Block '+el.type+'</div>\n'+
+			'<a class="props_controller"><i class="fas fa-cog"></i></a>\n'+
+			'<a class="childs_controller" onclick="admin.pages.UI_collapse(this.parentNode)" href="javascript://"><i class=" fas fa-caret-down"></i></a>';
+			newBlock.innerHTML += '<div style="display:none" class="childs childs_'+ident+'"></div>\n';
+			newBlock.id='ui_'+ident;
+			newBlock.className="ui_block";
+			return newBlock;
+			//document.getElementById("ui_editor").innerHTML+='\n<div class=""></div>';
+		},
+		UI_Parse_Element:function(el, parentId){
+				admin.pages.UI_lastId++;
+				console.log(el.type+" id = "+admin.pages.UI_lastId+"\n");
+				var newID = admin.pages.UI_lastId;
+				if(parentId!==-1){
+					document.getElementById("ui_"+parentId).getElementsByClassName("childs")[0].appendChild(admin.pages.UI_Make_Block(el,newID));
+
+				}else{
+					document.getElementById("ui_editor").appendChild(admin.pages.UI_Make_Block(el,newID));
+				}
+				if(el.childrens.length>0){
+					var newParentId = admin.pages.UI_lastId;
+					admin.pages.UI_Parse(el.childrens, newParentId);
+				}			
+		},
 		renderPageEditor:function(e){
+					
 					pageProps = '<a onclick=\"admin.pages.showPagesList()\" class=\"btn\" href=\"javascript://\">Back</a>';
 					if(e.page_id!=-1){
 						pageProps += '<a onclick=\"admin.pages.savePage('+e.page_id+')\" class=\"btn\" href=\"javascript://\">Save</a>'
@@ -397,8 +451,17 @@ var admin = {
 						statusbar_status = "status_enabled"
 					}
 					pageProps += '<div class="page_field"><div class="prop_title">Status</div><div class="status '+statusbar_status+'"></div><input class="status_field" style="display:none;" value="'+e.page_status+'"></div>'
-					pageProps += '<textarea class="source_field">'+e.page_source+'</textarea>'
+					pageProps += '<textarea class="source_field">'+e.page_source+'</textarea>';
+					pageProps += '<div id="ui_editor"></div>';
+					pageProps += '<a href="javascript://" onclick="admin.pages.UI_add_block()" id="add_block">ADD BLOCK</a>';
+					//console.log(admin.pages.UI_data);
+
 					document.getElementsByClassName("admin_content")[0].innerHTML=pageProps;
+
+					admin.pages.UI_data = JSON.parse(e.page_source);
+					admin.pages.UI_lastId = 0;
+					admin.pages.UI_Parse(admin.pages.UI_data.els,-1);
+
 					document.getElementsByClassName("status")[0].onclick=function(){
 						if(document.getElementsByClassName("status_field")[0].value==1){
 							document.getElementsByClassName("status_field")[0].value=0;
@@ -409,6 +472,8 @@ var admin = {
 							document.getElementsByClassName("status")[0].classList.remove("status_disabled");
 							document.getElementsByClassName("status")[0].classList.add("status_enabled");
 						}
+
+
 					}
 		},
 		newPage:function(){
